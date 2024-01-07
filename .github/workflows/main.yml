@@ -41,9 +41,9 @@ jobs:
         aws-region: ap-northeast-2
         script_stop: true
 
-    - name: Add Github Actions IP to Security group
-      run: |
-        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+    # - name: Add Github Actions IP to Security group
+    #  run: |
+    #    aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
     
     - name: Run Docker on EC2
       uses: appleboy/ssh-action@master
@@ -60,6 +60,6 @@ jobs:
           docker pull ${{ secrets.DOCKER_USERNAME }}/bis:dev
           docker run -d --name BIScon -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/bis:dev
 
-    - name: Remove Github Actions IP From Security Group
-      run: |
-        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+   # - name: Remove Github Actions IP From Security Group
+   #   run: |
+   #     aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
