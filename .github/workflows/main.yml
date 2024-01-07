@@ -1,0 +1,14 @@
+name: Simple Workflow
+
+on:
+  push:
+    branches:
+      - dev  # 코드가 main 브랜치로 푸시될 때 트리거
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # 실행 환경을 Ubuntu 최신 버전으로 지정
+
+    steps:
+    - name: Hello World
+      run: echo "Hello, World!"  # Hello World 메시지 출력하는 단계
