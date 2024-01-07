@@ -3,7 +3,7 @@ FROM python:3.9
 
 # 로컬에 있는 파일을 이미지에 복사하기
 COPY requirements.txt /bis/
-# COPY .env /bis/
+COPY .env.production /bis/
 COPY source/*.py /bis/source/
 
 # 필요한 Python 패키지 설치 (pip freeze > requirements.txt 명령을 통해 requirements.txt를 갱신해주는 작업이 선수로 필요)
