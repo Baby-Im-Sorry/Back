@@ -18,13 +18,12 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/bis:dev .
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker push ${{ secrets.DOCKER_USERNAME }}//bis:dev
-
-    - name: SSH into EC2 and Deploy
-      uses: appleboy/ssh-action@v1
+   
+    - name: Run Docker on EC2
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
+        username: ec2-user
         script: |
-          docker rm BIScon || true
-          docker pull ${{ secrets.DOCKER_USERNAME }}/bis:dev
-          docker run --name BIScon -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/bis:dev
+          docker pull myimage:latest
+          docker run -d --name mycontainer -p 80:80 myimage:latest
