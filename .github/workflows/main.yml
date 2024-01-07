@@ -2,11 +2,11 @@ name: Simple Workflow
 
 on:
   push:
-    branches:
-      - dev  # 코드가 main 브랜치로 푸시될 때 트리거
+    branches: ['dev']  # 코드가 main 브랜치로 푸시될 때 트리거
 
 jobs:
   build:
+    name: Simple Workflow
     runs-on: ubuntu-latest  # 실행 환경을 Ubuntu 최신 버전으로 지정
 
     steps:
