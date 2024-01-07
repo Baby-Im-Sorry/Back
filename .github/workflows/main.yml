@@ -44,7 +44,9 @@ jobs:
         port: 22
         script_stop: true
         script: |
-          docker rm BIScon
+          if [ $(docker ps -aq -f name=BIScon) ]; then
+            docker rm -f BIScon
+          fi
           docker pull ${{ secrets.DOCKER_USERNAME }}/bis:dev
           docker run --name BIScon -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/bis:dev
 
