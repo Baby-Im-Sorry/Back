@@ -20,7 +20,7 @@ jobs:
         docker push ${{ secrets.DOCKER_USERNAME }}//bis:dev
 
     - name: SSH into EC2 and Deploy
-      uses: appleboy/ssh-action@v0.3.0
+      uses: appleboy/ssh-action@v1
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USERNAME }}
