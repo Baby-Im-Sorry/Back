@@ -12,13 +12,29 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
+      
+    - name: Get Github Actions IP
+      id: ip
+      uses: haythem/public-ip@v1.2      
 
     - name: Build Docker Image
       run: |
         docker build -t ${{ secrets.DOCKER_USERNAME }}/bis:dev .
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker push ${{ secrets.DOCKER_USERNAME }}/bis:dev
-   
+  
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+        script_stop: true
+
+    - name: Add Github Actions IP to Security group
+      run: |
+        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 8000 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+    
     - name: Run Docker on EC2
       uses: appleboy/ssh-action@master
       with:
@@ -26,7 +42,12 @@ jobs:
         username: ec2-user
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         port: 8000
+        script_stop: true
         script: |
           docker rm BIScon
           docker pull ${{ secrets.DOCKER_USERNAME }}/bis:dev
           docker run --name BIScon -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/bis:dev
+
+    - name: Remove Github Actions IP From Security Group
+      run: |
+        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 8000 --cidr ${{ steps.ip.outputs.ipv4 }}/32
