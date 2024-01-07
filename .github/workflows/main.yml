@@ -13,9 +13,9 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
       
-    - name: Get Github Actions IP
-      id: ip
-      uses: haythem/public-ip@v1.2
+    # - name: Get Github Actions IP
+    #  id: ip
+    #  uses: haythem/public-ip@v1.2
 
     - name: Generate Environment Variables File for Production
       run: |
