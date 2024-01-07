@@ -39,7 +39,6 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-2
-        script_stop: true
 
     # - name: Add Github Actions IP to Security group
     #  run: |
@@ -54,11 +53,11 @@ jobs:
         port: 22
         script_stop: true
         script: |
-          if [ $(docker ps -aq -f name=BIScon) ]; then
-            docker rm -f BIScon
+          if [ $(docker ps -aq -f name=biscon) ]; then
+            docker rm -f biscon
           fi
           docker pull ${{ secrets.DOCKER_USERNAME }}/bis:dev
-          docker run -d --name BIScon -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/bis:dev
+          docker run -d --name biscon -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/bis:dev
 
    # - name: Remove Github Actions IP From Security Group
    #   run: |
