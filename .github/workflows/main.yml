@@ -15,7 +15,17 @@ jobs:
       
     - name: Get Github Actions IP
       id: ip
-      uses: haythem/public-ip@v1.2      
+      uses: haythem/public-ip@v1.2
+
+    - name: Generate Environment Variables File for Production
+      run: |
+        echo "DATABASE_ID=$DATABASE_ID" >> .env.production
+        echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> .env.production
+        echo "DATABASE_URI=$DATABASE_URI" >> .env.production
+      env:
+        DATABASE_ID: ${{ secrets.DATABASE_ID }}
+        DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        DATABASE_URI: ${{ secrets.DATABASE_URI }}
 
     - name: Build Docker Image
       run: |
