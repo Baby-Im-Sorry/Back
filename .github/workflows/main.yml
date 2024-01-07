@@ -58,7 +58,7 @@ jobs:
             docker rm -f BIScon
           fi
           docker pull ${{ secrets.DOCKER_USERNAME }}/bis:dev
-          docker run --name BIScon -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/bis:dev
+          docker run -d --name BIScon -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/bis:dev
 
     - name: Remove Github Actions IP From Security Group
       run: |
