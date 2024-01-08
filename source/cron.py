@@ -3,7 +3,7 @@ from crontab import CronTab
 
 cron_expression = "*/15 * * * * *"
 
-cron = CronTab(user="root")
+cron = CronTab()
 
 for job in cron:
     if job.setall(cron_expression):
