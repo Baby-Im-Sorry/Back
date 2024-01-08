@@ -1,7 +1,7 @@
 from croniter import croniter
 from crontab import CronTab
 
-cron_expression = "*/15 * * * * *"
+cron_expression = "*/1 * * * * "
 
 cron = CronTab()
 
