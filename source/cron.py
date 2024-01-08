@@ -3,7 +3,7 @@ from crontab import CronTab
 
 cron_expression = "*/1 * * * *"
 
-cron = CronTab()
+cron = CronTab(user="ec2-user")
 
 for job in cron:
     if job.setall(cron_expression):
