@@ -5,5 +5,3 @@ echo "*/1 * * * * docker exec biscon /usr/bin/python3 /bis/source/test.py > /bis
 chmod 0644 /etc/cron.d/cronjob
 
 crontab /etc/cron.d/cronjob
-
-service cron restart
