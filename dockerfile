@@ -9,7 +9,7 @@ COPY source /bis/source/
 # 필요한 Python 패키지 설치 (pip freeze > requirements.txt 명령을 통해 requirements.txt를 갱신해주는 작업이 선수로 필요)
 RUN pip install -r /bis/requirements.txt
 RUN apt-get update && apt-get install -y cron && apt-get install -y vim
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /bis/source/shell/entrypoint.sh
 
 # 컨테이너의 작업 디렉터리 설정 (쉘이 초기에 bis 폴더에서 열림)
 WORKDIR /bis/source
