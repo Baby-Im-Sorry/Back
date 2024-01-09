@@ -1,1 +1,3 @@
-print("Connecting The Dot!")
+import time
+
+print(f"Connecting The Dot! || {time.time()}")
