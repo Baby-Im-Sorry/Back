@@ -7,6 +7,7 @@ user_collection: Collection = db["users"]
 request_collection: Collection = db["requests"]
 breifing_collection: Collection = db["breifings"]
 
+
 def check_user(username: str):
     existing_user = user_collection.find_one({"username": username})
 
@@ -18,13 +19,15 @@ def check_user(username: str):
             return err
     if existing_user:  # 기존 유저 -> 로그인
         return {"msg": "login", "user_id": str(existing_user["_id"])}
-    
+
+
 def save_user(username: str):
     user_data = {
         "username": username,
     }
     user_id = user_collection.insert_one(user_data).inserted_id
     return user_id
+
 
 def save_request(user_id: str, interval: int, endtime: str):
     # request_name: 요청 이름 -> 그날 날짜 시간으로 자동 저장
@@ -36,6 +39,7 @@ def save_request(user_id: str, interval: int, endtime: str):
     }
     request_id = request_collection.insert_one(request_data).inserted_id
     return request_id
+
 
 def save_breifing(request_id: str, breifing: str):
     breifing_data = {

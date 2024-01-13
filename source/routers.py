@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Form, HTTPException
 from models import check_user, save_request
-from test import test
+import run_test
 
 router = APIRouter()
 
@@ -30,7 +30,7 @@ def startBriefing(
 ):
     try:
         request_id = save_request(user_id, interval, endtime)
-        test.test(user_id, interval, endtime)
+        run_test.test(user_id, interval, endtime)
         # 위에건 크론 등록
         return {"message": "success", "request_id": str(request_id)}
     except HTTPException as e:
