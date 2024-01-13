@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Form, HTTPException
-from source.models import check_user, save_request
-from source.run_cron import run_cron
+from models import check_user, save_request
+from run_cron import run_cron
 
 router = APIRouter()
 

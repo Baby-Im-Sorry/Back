@@ -1,5 +1,5 @@
 from pymongo.collection import Collection
-from source.config_db import db
+from config_db import db
 import datetime
 
 # user 테이블 불러오기
