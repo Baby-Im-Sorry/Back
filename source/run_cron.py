@@ -7,7 +7,7 @@ now_hour = int(now.split(":")[0])
 now_minute = int(now.split(":")[1])
 
 
-def test(user_id, interval, endtime):
+def run_cron(user_id, interval, endtime):
     end_hour = int(endtime.split(":")[0])
     cron_job = f"*/{interval} {now_hour}-{end_hour} * * * /usr/bin/python3 /bis/source/cron_test.py >> /bis/cron_test.log 2>&1"
     subprocess.run(
