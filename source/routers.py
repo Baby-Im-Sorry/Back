@@ -24,13 +24,13 @@ def login(username: str = Form(...)):
 
 @router.post("/startBreifing")
 def startBriefing(
-    user_id: str = Form(...),
+    username: str = Form(...),
     interval: int = Form(...),
     endtime: str = Form(...),
 ):
     try:
-        request_id = save_request(user_id, interval, endtime)
-        run_cron(user_id, interval, endtime)
+        request_id = save_request(username, interval, endtime)
+        run_cron(username, interval, endtime)
         # 위에건 크론 등록
         return {"message": "success", "request_id": str(request_id)}
     except HTTPException as e:
