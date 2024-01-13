@@ -25,10 +25,11 @@ def login(username: str = Form(...)):
 @router.post("/startBreifing")
 def startBriefing(
     username: str = Form(...),
-    interval: int = Form(...),
+    interval: str = Form(...),
     endtime: str = Form(...),
 ):
     try:
+        interval = int(interval)
         request_id = save_request(username, interval, endtime)
         run_cron(username, interval, endtime)
         # 위에건 크론 등록
