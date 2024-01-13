@@ -22,7 +22,7 @@ def login(username: str = Form(...)):
         return HTTPException(status_code=500, detail=f"Login Error: {str(e)}")
 
 
-@router.post("/startBreifing")
+@router.post("/startBriefing")
 def startBriefing(
     username: str = Form(...),
     interval: str = Form(...),
