@@ -31,6 +31,8 @@ def save_user(username: str):
 
 def save_request(user_id: str, interval: int, endtime: str):
     # request_name: 요청 이름 -> 그날 날짜 시간으로 자동 저장
+    parsed_time = datetime.datetime.strptime(endtime, "%I:%M %p")
+    endtime = parsed_time.strftime("%H:%M")
     request_data = {
         "user_id": user_id,
         "request_name": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
