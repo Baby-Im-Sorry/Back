@@ -12,7 +12,7 @@ def test(user_id, interval, endtime):
         shell=True,
     )
     subprocess.run(
-        ["chmod", f"/etc/cron.d/cronjob_{user_id}"],
+        ["chmod", f"0644 /etc/cron.d/cronjob_{user_id}"],
     )
     subprocess.run(
         ["crontab", f"/etc/cron.d/cronjob_{user_id}"],
