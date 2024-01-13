@@ -11,18 +11,8 @@ def test(user_id, interval, endtime):
         f'echo "{cron_job}" > /etc/cron.d/cronjob_{user_id}',
         shell=True,
     )
-    subprocess.run(
-        ["chmod", f"0644 /etc/cron.d/cronjob_{user_id}"],
-    )
-    subprocess.run(
-        ["crontab", f"/etc/cron.d/cronjob_{user_id}"],
-    )
-
-
-# def test(user_id, interval, endtime):
-#     subprocess.run(
-#         [f"echo {interval} || {interval} || endtime"],
-#     )
+    subprocess.run(f"chmod 0644 /etc/cron.d/cronjob_{user_id}", shell=True)
+    subprocess.run(f"crontab /etc/cron.d/cronjob_{user_id}", shell=True)
 
 
 # subprocess.run(["echo", f"hello_{formatted_time}"], shell=True)
