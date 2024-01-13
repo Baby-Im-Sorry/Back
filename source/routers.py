@@ -30,7 +30,7 @@ def startBriefing(
 ):
     try:
         request_id = save_request(user_id, interval, endtime)
-        run_cron.test(user_id, interval, endtime)
+        run_cron(user_id, interval, endtime)
         # 위에건 크론 등록
         return {"message": "success", "request_id": str(request_id)}
     except HTTPException as e:
