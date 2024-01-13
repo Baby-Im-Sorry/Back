@@ -49,4 +49,4 @@ jobs:
             docker rm -f biscon
           fi
           docker pull ${{ secrets.DOCKER_USERNAME }}/bis:dev
-          docker run --name biscon -e TZ=Asia/Seoul -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/bis:dev
+          docker run -d --name biscon -e TZ=Asia/Seoul -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/bis:dev
