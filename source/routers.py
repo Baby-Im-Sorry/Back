@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Form, HTTPException
-from models import check_user, save_request
-import run_test
+from source.models import check_user, save_request
+from source.run_cron import run_cron
 
 router = APIRouter()
 
@@ -30,7 +30,7 @@ def startBriefing(
 ):
     try:
         request_id = save_request(user_id, interval, endtime)
-        run_test.test(user_id, interval, endtime)
+        run_cron.test(user_id, interval, endtime)
         # 위에건 크론 등록
         return {"message": "success", "request_id": str(request_id)}
     except HTTPException as e:
