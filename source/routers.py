@@ -43,8 +43,9 @@ def endBriefing(
     username: str = Form(...)
 ):
     try:
-        subprocess.run(["rm", f"/etc/cron.d/cronjob_{username}"], check=True)
-        return {"message": f"Briefing 제거"}
+        #등록된 크론job파일 삭제
+        subprocess.run(["crontab", "-r", "-u", username], check=True)
+        return {"message": "Briefing remove", "username": username}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Briefing 에러: {str(e)}")
 
