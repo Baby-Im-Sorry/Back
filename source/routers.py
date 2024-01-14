@@ -46,14 +46,14 @@ def endBriefing(
        # 크론 작업 파일 경로
         cronjob_file = f"/etc/cron.d/cronjob_{username}"
 
-        #subprocess.run(["chown", f"{username}:{username}", cronjob_file], check=True)
-        subprocess.run(["chmod", "600", cronjob_file], check=True)
-
         # 크론 작업 파일 삭제
         subprocess.run(["rm", cronjob_file], check=True)
 
+        # 실행 권한 부여
+        subprocess.run(["chmod", "+x", cronjob_file], check=True)
+
         # 크론 작업 등록 취소
-        subprocess.run(["crontab", "-r","-u", username], check=True)
+        subprocess.run(["crontab", "-r", "-u", username], check=True)
 
         return {"message": "Briefing removed", "username": username}
     except subprocess.CalledProcessError as e:
