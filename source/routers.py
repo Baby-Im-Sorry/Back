@@ -50,7 +50,7 @@ def endBriefing(
         subprocess.run(["rm", cronjob_file], check=True)
 
         # 크론 작업 등록 취소
-        subprocess.run(["crontab", "-r", username], check=True)
+        subprocess.run(["crontab", "-r","-u", "cronjob_", username], check=True)
 
         return {"message": f"Briefing removed", "username": username}
     except Exception as e:
