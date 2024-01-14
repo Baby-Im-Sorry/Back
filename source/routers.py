@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Form, HTTPException
 from models import check_user, save_request
 from run_cron import run_cron
+import subprocess
 
 router = APIRouter()
 
@@ -35,7 +36,18 @@ def startBriefing(
         # 위에건 크론 등록
         return {"message": "success", "request_id": str(request_id)}
     except HTTPException as e:
-        return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
+        return HTTPException(status_code=500, detail=f"Briefing Error: {str(e)}")
+
+@router.post("/endBriefing")
+def endBriefing(
+    username: str = Form(...)
+):
+    try:
+        subprocess.run(["rm", f"/etc/cron.d/cronjob_{username}"], check=True)
+        return {"message": f"Briefing 제거"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Briefing 에러: {str(e)}")
+
 
 
 # @router.post("/sendclient")
