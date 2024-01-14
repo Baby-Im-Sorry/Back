@@ -44,19 +44,14 @@ def endBriefing(
 ):
         
     try:
-    # 크론 작업 파일 경로
+        # 크론 작업 파일 경로
         cronjob_file = f"/etc/cron.d/cronjob_{username}"
 
-        # 크론 작업 파일 백업
-        subprocess.run(["crontab", "-l", "-u", username, ">", f"{cronjob_file}_backup"], check=True)
-
-        # 특정 크론 작업 제거 
-        subprocess.run(["sed", "-i", f"/{username}/d", cronjob_file])
-        # 크론 작업 파일을 다시 적용
-        subprocess.run(["crontab", cronjob_file], check=True)
-
-        # 삭제된 크론 작업 파일 삭제
+        # 크론 작업 파일 삭제
         subprocess.run(["rm", cronjob_file], check=True)
+
+        # 도커 컨테이너 내부에서 특정 사용자로 로그인하여 크론 작업 등록 취소
+        subprocess.run(["docker", "exec", "-u", username, "biscon", "crontab", "-r"], check=True)
 
         return {"message": "Briefing removed", "username": username}
     except subprocess.CalledProcessError as e:
