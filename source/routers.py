@@ -46,6 +46,9 @@ def endBriefing(
        # 크론 작업 파일 경로
         cronjob_file = f"/etc/cron.d/cronjob_{username}"
 
+        subprocess.run(["chown", f"{username}:{username}", cronjob_file], check=True)
+        subprocess.run(["chmod", "600", cronjob_file], check=True)
+
         # 크론 작업 파일 삭제
         subprocess.run(["rm", cronjob_file], check=True)
 
@@ -61,3 +64,4 @@ def endBriefing(
 # @router.post("/sendclient")
 # def send_to_client():
 #     pass
+
