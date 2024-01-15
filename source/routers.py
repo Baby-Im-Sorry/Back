@@ -55,10 +55,7 @@ def endBriefing(
 
         return {"message": "Briefing removed", "username": username}
     except subprocess.CalledProcessError as e:
-        raise HTTPException(status_code=500, detail=f"Briefing 에러: {str(e)}")
-
-
-# @router.post("/sendclient")
-# def send_to_client():
-#     pass
+        raise HTTPException(status_code=500, detail=f"Briefing error: {str(e)}")
+    except Exception as e:
+        return {"message": "error", "detail": str(e)}
 
