@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Form, HTTPException
+from fastapi import APIRouter, Form, HTTPException, WebSocket
 from models import check_user, save_request
 from run_cron import start_cron
+from models import briefing_collection as bf_collection
 
 router = APIRouter()
 
@@ -37,6 +38,16 @@ def startBriefing(
         return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
 
 
-# @router.post("/sendclient")
-# def send_to_client():
-#     pass
+@router.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    change_stream = bf_collection.watch()
+    try:
+        while True:
+            change = next(change_stream)
+            # MongoDB에서 변경사항이 감지되면 메시지 전송
+            await websocket.send_text("변화 감지!")
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        await websocket.close()
