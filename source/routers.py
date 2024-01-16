@@ -39,7 +39,7 @@ def startBriefing(
     except HTTPException as e:
         return HTTPException(status_code=500, detail=f"Briefing Error: {str(e)}")
 
-
+@router.post("/endBriefing")
 async def endBriefing(ws: WebSocket, username: str):
     await ws.accept()
 
