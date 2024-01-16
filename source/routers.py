@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Form, HTTPException
 from models import check_user, save_request
-from run_cron import run_cron
+from run_cron import start_cron
 
 router = APIRouter()
 
@@ -31,8 +31,7 @@ def startBriefing(
     try:
         interval = int(interval)
         request_id = save_request(username, interval, endtime)
-        run_cron(username, interval, endtime)
-        # 위에건 크론 등록
+        start_cron(username, interval, endtime)
         return {"message": "success", "request_id": str(request_id)}
     except HTTPException as e:
         return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
