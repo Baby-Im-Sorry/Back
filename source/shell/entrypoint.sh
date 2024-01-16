@@ -4,4 +4,4 @@
 cron
 
 # Uvicorn 서버 시작
-exec uvicorn main:app --reload --host 0.0.0.0 --port 8000
+exec uvicorn main:app --reload --host 0.0.0.0 --port 8000 --proxy-headers --ws websockets
