@@ -49,5 +49,5 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_text("변화 감지!")
     except Exception as e:
         print(f"Error: {e}")
-    finally:
-        await websocket.close()
+    # finally:
+    # await websocket.close()
