@@ -5,7 +5,7 @@ import datetime
 # user 테이블 불러오기
 user_collection: Collection = db["users"]
 request_collection: Collection = db["requests"]
-breifing_collection: Collection = db["breifings"]
+briefing_collection: Collection = db["briefings"]
 
 
 def save_user(username: str):
@@ -30,13 +30,13 @@ def save_request(username: str, interval: int, endtime: str):
     return request_id
 
 
-def save_breifing(request_id: str, breifing: str):
-    breifing_data = {
+def save_breifing(request_id: str, briefing: str):
+    briefing_data = {
         "request_id": request_id,
-        "breifing": breifing,
+        "briefing": briefing,
     }
-    breifing_id = breifing_collection.insert_one(breifing_data).inserted_id
-    return breifing_id
+    briefing_id = briefing_collection.insert_one(briefing_data).inserted_id
+    return briefing_id
 
 
 def check_user(username: str):
