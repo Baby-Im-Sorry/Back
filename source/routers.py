@@ -66,7 +66,7 @@ def endBriefing(username: str = Form(...)):
         return JSONResponse(content={"message": "error", "detail": str(e)}, status_code=500)
 
 @router.post("/sendBriefing")    
-def sendBriefing(username: str = Query(..., description="Username of the user to fetch briefing data")):
+def sendBriefing(username: str = Query(...)):
     try:
         # MongoDB briefings 컬렉션 조회
         briefings_collection: Collection = db["briefings"]
