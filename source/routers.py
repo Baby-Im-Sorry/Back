@@ -1,9 +1,9 @@
 from fastapi import APIRouter, WebSocket, HTTPException, Form
 from models import check_user, save_request
 from run_cron import run_cron
-import asyncio
 import subprocess
 from fastapi.responses import JSONResponse
+import os
 
 router = APIRouter()
 
@@ -40,13 +40,16 @@ def startBriefing(
     except HTTPException as e:
         return HTTPException(status_code=500, detail=f"Briefing Error: {str(e)}")
 
+
+docker_path = os.getenv("DOCKER_PATH", "/usr/bin/docker")
+
 @router.post("/endBriefing")
 def endBriefing(username: str = Form(...)):
     cronjob_file = f"/etc/cron.d/cronjob_{username}"
 
     try:
         # 크론 작업 파일 삭제
-        subprocess.run(["/usr/bin/docker", "exec", "-u", username, "biscon", "rm", cronjob_file], check=True)
+        subprocess.run([docker_path, "exec", "-u", username, "biscon", "rm", cronjob_file], check=True)
 
         return JSONResponse(content={"message": "Briefing removed", "username": username})
     except subprocess.CalledProcessError as e:
