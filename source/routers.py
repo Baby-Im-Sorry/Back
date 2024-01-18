@@ -2,7 +2,8 @@ from fastapi import APIRouter, WebSocket, HTTPException, Form
 from models import check_user, save_request
 from run_cron import run_cron
 import asyncio
-#import subprocess
+import subprocess
+from fastapi.responses import JSONResponse
 
 router = APIRouter()
 
@@ -39,23 +40,17 @@ def startBriefing(
     except HTTPException as e:
         return HTTPException(status_code=500, detail=f"Briefing Error: {str(e)}")
 
-@router.websocket("/endBriefing/{uesrname}")
-async def endBriefing(ws: WebSocket, username: str):
-    await ws.accept()
-
+@router.post("/endBriefing")
+def endBriefing(username: str = Form(...)):
     cronjob_file = f"/etc/cron.d/cronjob_{username}"
 
     try:
         # 크론 작업 파일 삭제
-        process1 = await asyncio.create_subprocess_exec("rm", cronjob_file)
-        await process1.wait()
+        subprocess.run(["rm", cronjob_file], check=True)
 
         # 도커 컨테이너 내부에서 특정 사용자로 로그인하여 크론 작업 등록 취소
-        process2 = await asyncio.create_subprocess_exec("docker", "exec", "-u", username, "biscon", "rm", cronjob_file)
-        await process2.wait()
+        subprocess.run(["docker", "exec", "-u", username, "biscon", "rm", cronjob_file], check=True)
 
-        await ws.send_json({"message": "Briefing removed", "username": username})
-    except Exception as e:
-        await ws.send_json({"message": "error", "detail": str(e)})
-    finally:
-        await ws.close()
+        return JSONResponse(content={"message": "Briefing removed", "username": username})
+    except subprocess.CalledProcessError as e:
+        return JSONResponse(content={"message": "error", "detail": str(e)}, status_code=500)
