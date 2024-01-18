@@ -1,4 +1,4 @@
-from fastapi import APIRouter, WebSocket, HTTPException, Form
+from fastapi import APIRouter, HTTPException, Form, Query
 from models import check_user, save_request
 from run_cron import run_cron
 from pymongo.collection import Collection
@@ -65,12 +65,12 @@ def endBriefing(username: str = Form(...)):
     except subprocess.CalledProcessError as e:
         return JSONResponse(content={"message": "error", "detail": str(e)}, status_code=500)
 
-@router.get("/sendBriefing")    
-def sendBriefing(username: str = Form(...)):
+@router.post("/sendBriefing")    
+def sendBriefing(username: str = Query(..., description="Username of the user to fetch briefing data")):
     try:
-        # MongoDB requests 컬렉션 조회
-        requests_collection: Collection = db["requests"]
-        briefing_data = list(requests_collection.find({"username": username}))
+        # MongoDB briefings 컬렉션 조회
+        briefings_collection: Collection = db["briefings"]
+        briefing_data = list(briefings_collection.find({"username": username}))
 
         # 조회된 데이터를 JSON 형식으로 반환
         return JSONResponse(content=briefing_data, status_code=200)
