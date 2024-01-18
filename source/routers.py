@@ -46,10 +46,7 @@ def endBriefing(username: str = Form(...)):
 
     try:
         # 크론 작업 파일 삭제
-        subprocess.run(["rm", cronjob_file], check=True)
-
-        # 도커 컨테이너 내부에서 특정 사용자로 로그인하여 크론 작업 등록 취소
-        subprocess.run(["docker", "exec", "-u", username, "biscon", "rm", cronjob_file], check=True)
+        subprocess.run(["/usr/bin/docker", "exec", "-u", username, "biscon", "rm", cronjob_file], check=True)
 
         return JSONResponse(content={"message": "Briefing removed", "username": username})
     except subprocess.CalledProcessError as e:
