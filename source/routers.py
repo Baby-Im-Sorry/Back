@@ -52,35 +52,42 @@ def endBriefing(username: str = Form(...)):
     cronjob_file = f"/etc/cron.d/cronjob_{username}"
 
     try:
-       
-        # 크론 작업 파일 삭제
-        subprocess.run(["rm", cronjob_file])
-
-        # 해당 사용자의 크론 작업 조회
+        
+        # 조회된 크론 작업에서 해당 사용자의 cronjob 주석 처리
         existing_crontab = subprocess.run(
             ["crontab", "-u", username, "-l"],
-            check=True,
             stdout=subprocess.PIPE,
-            text=True,
-        ).stdout
-
-        # 조회된 크론 작업에서 해당 사용자의 cronjob 주석 처리
-        updated_crontab = existing_crontab.replace(
-            f"/etc/cron.d/cronjob_{username}", f"# /etc/cron.d/cronjob_{username}"
-        )
-
-        # 주석 처리된 크론 작업을 저장
-        subprocess.run(
-            ["crontab", "-u", username, "-"],
-            input=updated_crontab,
-            check=True,
-            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             text=True,
         )
 
-        return JSONResponse(content={"message": "Briefing removed", "username": username})
+        if existing_crontab.returncode == 0:
+            # 만약 crontab이 존재하면 수정
+            updated_crontab = existing_crontab.stdout.replace(
+                f"/etc/cron.d/cronjob_{username}",
+                f"# /etc/cron.d/cronjob_{username}",
+            )
+
+            # 주석 처리된 크론 작업을 저장
+            subprocess.run(
+                ["crontab", "-u", username, "-"],
+                input=updated_crontab,
+                check=True,
+                stdout=subprocess.PIPE,
+                text=True,
+            )
+        # 크론 작업 파일 삭제
+        subprocess.run(["rm", cronjob_file])
+        
+        return JSONResponse(
+            content={"message": "Briefing removed", "username": username}
+        )
     except subprocess.CalledProcessError as e:
-        return JSONResponse(content={"message": "error", "detail": str(e)}, status_code=500)
+        return JSONResponse(
+            content={"message": "error", "detail": str(e)},
+            status_code=500,
+        )
+    
 @router.get("/sendBriefing")    
 def sendBriefing(username: str = Query(...)):
     try:
