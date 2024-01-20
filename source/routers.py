@@ -6,7 +6,8 @@ from fastapi.responses import JSONResponse
 from fastapi.responses import PlainTextResponse
 from config_db import db
 import subprocess
-import os
+import logging
+#import os
 
 
 router = APIRouter()
@@ -52,8 +53,10 @@ def endBriefing(username: str = Form(...)):
     cronjob_file = f"/etc/cron.d/cronjob_{username}"
 
     try:
-        
-        # 조회된 크론 작업에서 해당 사용자의 cronjob 주석 처리
+        # 로깅
+        logging.info(f"사용자 {username}의 cronjob을 제거하는 중")
+
+        # 지정된 사용자에 대한 crontab이 있는지 확인
         existing_crontab = subprocess.run(
             ["crontab", "-u", username, "-l"],
             stdout=subprocess.PIPE,
@@ -62,13 +65,13 @@ def endBriefing(username: str = Form(...)):
         )
 
         if existing_crontab.returncode == 0:
-            # 만약 crontab이 존재하면 수정
+            # crontab이 존재하면 수정
             updated_crontab = existing_crontab.stdout.replace(
                 f"/etc/cron.d/cronjob_{username}",
                 f"# /etc/cron.d/cronjob_{username}",
             )
 
-            # 주석 처리된 크론 작업을 저장
+            # 주석 처리된 crontab을 저장
             subprocess.run(
                 ["crontab", "-u", username, "-"],
                 input=updated_crontab,
@@ -76,13 +79,21 @@ def endBriefing(username: str = Form(...)):
                 stdout=subprocess.PIPE,
                 text=True,
             )
-        # 크론 작업 파일 삭제
+            logging.info("Crontab이 성공적으로 수정되었습니다.")
+
+        # cronjob 파일 제거
         subprocess.run(["rm", cronjob_file])
-        
+
+        # 로깅
+        logging.info(f"Cronjob 파일 {cronjob_file}이 제거되었습니다.")
+
         return JSONResponse(
             content={"message": "Briefing removed", "username": username}
         )
     except subprocess.CalledProcessError as e:
+        # 로깅
+        logging.error(f"에러: {str(e)}")
+
         return JSONResponse(
             content={"message": "error", "detail": str(e)},
             status_code=500,
