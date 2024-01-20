@@ -56,8 +56,8 @@ def endBriefing(username: str = Form(...)):
         subprocess.run(["rm", cronjob_file])
 
         # 크론탭에서 해당 크론 작업 삭제
-        subprocess.run(["crontab", "-l"], check=True, stdout=subprocess.PIPE, text=True)
-        subprocess.run([f"crontab -l | sed '/cronjob_{username}/d' | crontab -"], shell=True)
+        #subprocess.run(["crontab", "-l"], check=True, stdout=subprocess.PIPE, text=True)
+        #subprocess.run([f"crontab -l | sed '/cronjob_{username}/d' | crontab -"], shell=True)
 
         # subprocess.run(["docker", "exec", "-u", username, "biscon", "rm", cronjob_file])
 
