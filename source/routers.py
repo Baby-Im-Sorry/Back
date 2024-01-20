@@ -3,6 +3,7 @@ from models import check_user, save_request
 from run_cron import run_cron
 from pymongo.collection import Collection
 from fastapi.responses import JSONResponse
+from fastapi.responses import PlainTextResponse
 from config_db import db
 import subprocess
 import os
@@ -55,17 +56,33 @@ def endBriefing(username: str = Form(...)):
         # 크론 작업 파일 삭제
         subprocess.run(["rm", cronjob_file])
 
-        # 크론탭에서 해당 크론 작업 삭제
-        subprocess.run(["crontab", "-l"], check=True, stdout=subprocess.PIPE, text=True)
-        subprocess.run([f"crontab -l | sed '/cronjob_{username}/d' | crontab -"], shell=True)
+        # 해당 사용자의 크론 작업 조회
+        existing_crontab = subprocess.run(
+            ["crontab", "-u", username, "-l"],
+            check=True,
+            stdout=subprocess.PIPE,
+            text=True,
+        ).stdout
 
-        # subprocess.run(["docker", "exec", "-u", username, "biscon", "rm", cronjob_file])
+        # 조회된 크론 작업에서 해당 사용자의 cronjob 주석 처리
+        updated_crontab = existing_crontab.replace(
+            f"/etc/cron.d/cronjob_{username}", f"# /etc/cron.d/cronjob_{username}"
+        )
+
+        # 주석 처리된 크론 작업을 저장
+        subprocess.run(
+            ["crontab", "-u", username, "-"],
+            input=updated_crontab,
+            check=True,
+            stdout=subprocess.PIPE,
+            text=True,
+        )
 
         return JSONResponse(content={"message": "Briefing removed", "username": username})
     except subprocess.CalledProcessError as e:
         return JSONResponse(content={"message": "error", "detail": str(e)}, status_code=500)
 
-@router.post("/sendBriefing")    
+@router.get("/sendBriefing")    
 def sendBriefing(username: str = Query(...)):
     try:
         # MongoDB briefings 컬렉션 조회
