@@ -81,7 +81,6 @@ def endBriefing(username: str = Form(...)):
         return JSONResponse(content={"message": "Briefing removed", "username": username})
     except subprocess.CalledProcessError as e:
         return JSONResponse(content={"message": "error", "detail": str(e)}, status_code=500)
-
 @router.get("/sendBriefing")    
 def sendBriefing(username: str = Query(...)):
     try:
