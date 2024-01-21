@@ -2,12 +2,12 @@ import subprocess
 import datetime
 
 
-def start_cron(username, interval, endtime):
+def start_cron(username, interval, endtime, request_id):
     end_hour = int(endtime.split(":")[0]) + 12 - 1
     current_time = datetime.datetime.now().time()
     now = current_time.strftime("%H:%M")
     now_hour = int(now.split(":")[0])
-    cron_job = f"*/{interval} {now_hour}-{end_hour} * * * /usr/bin/python3 /bis/source/cron_test.py >> /bis/cron_{username}.log 2>&1"
+    cron_job = f"*/{interval} {now_hour}-{end_hour} * * * /usr/bin/python3 /bis/source/inference_pipeline.py --request_id='{request_id}' >> /bis/cron_{username}.log 2>&1"
     subprocess.run(
         f'echo "{cron_job}" >> /etc/cron.d/cronjob',
         shell=True,
