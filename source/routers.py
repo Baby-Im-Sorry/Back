@@ -54,7 +54,7 @@ async def websocket_endpoint(websocket: WebSocket, username: str):
     await websocket.accept()
 
     # 해당 사용자의 가장 최신 request_id 찾기
-    latest_request = bf_collection.request.find_one( ###
+    latest_request = bf_collection.find_one(
         {"username": username},
         sort=[("request_id", -1)] # -1 : 내림차순 정렬
     )
