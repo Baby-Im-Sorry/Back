@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Form, HTTPException, WebSocket
 from models import check_user, save_request
-from run_cron import start_cron
+from run_cron import start_cron, end_cron
 from models import briefing_collection as bf_collection
 
 router = APIRouter()
@@ -34,6 +34,17 @@ def startBriefing(
         request_id = save_request(username, interval, endtime)
         start_cron(username, interval, endtime)
         return {"message": "success", "request_id": str(request_id)}
+    except HTTPException as e:
+        return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
+
+
+@router.post("/endBriefing")
+def endBriefing(
+    username: str = Form(...),
+):
+    try:
+        end_cron(username)
+        return {"message": "success"}
     except HTTPException as e:
         return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
 
