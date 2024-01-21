@@ -30,7 +30,7 @@ def save_request(username: str, interval: int, endtime: str):
     return request_id
 
 
-def save_breifing(request_id: str, briefing: str):
+def save_briefing(request_id: str, briefing: str):
     briefing_data = {
         "request_id": request_id,
         "briefing": briefing,
