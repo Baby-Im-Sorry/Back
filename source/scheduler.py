@@ -30,17 +30,3 @@ def end_scheduler(username):
     except JobLookupError:
         pass
     scheduler.shutdown()
-
-
-# user_id = "test"
-# interval = 10
-# endtime = "1:00"
-# end_hour = int(endtime.split(":")[0])
-# # end_minute = int(endtime.split(":")[1].split(" ")[0])
-
-# cron_job = f"*/{interval} {now_hour}-{end_hour} * * * /usr/bin/python3 /bis/source/cron_test.py >> /bis/cron_test.log 2>&1"
-# subprocess.run(
-#     f'echo "{cron_job}" > /etc/cron.d/cronjob_{user_id}',
-#     shell=True,
-# )
-# print(f'echo "{cron_job}" > /etc/cron.d/cronjob_{user_id}')
