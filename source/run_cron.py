@@ -17,14 +17,15 @@ def start_cron(username, interval, endtime):
 
 
 def end_cron(username):
-    subprocess.run(f"rm /bis/cron_{username}.log", shell=True)
-    result = subprocess.run(f"crontab -l", stdout=subprocess.PIPE)
+    result = subprocess.run(f"crontab -l", stdout=subprocess.PIPE, shell=True)
     crontab_content = result.stdout.decode()
     cron_jobs = crontab_content.strip().split("\n")
     for i in cron_jobs:
         if f"/bis/cron_{username}.log" in i:
             with open("/etc/cron.d/cronjob", "w") as f:
                 f.write(crontab_content.replace(i, ""))
+    subprocess.run(f"crontab /etc/cron.d/cronjob", shell=True)
+    subprocess.run(f"rm /bis/cron_{username}.log", shell=True)
 
 
 # user_id = "test"
