@@ -45,9 +45,8 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             change = next(change_stream)
-            # MongoDB에서 변경사항이 감지되면 메시지 전송
             await websocket.send_text("변화 감지!")
     except Exception as e:
         print(f"Error: {e}")
-    # finally:
-    # await websocket.close()
+    finally:
+        await websocket.close()
