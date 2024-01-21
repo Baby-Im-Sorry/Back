@@ -3,11 +3,11 @@ import datetime
 
 
 def start_cron(username, interval, endtime):
-    end_hour = int(endtime.split(":")[0]) - 1
+    end_hour = int(endtime.split(":")[0]) + 12 - 1
     current_time = datetime.datetime.now().time()
     now = current_time.strftime("%H:%M")
     now_hour = int(now.split(":")[0])
-    cron_job = f"*/{interval} {now_hour}-{end_hour} * * * /usr/bin/python3 /bis/source/cron_test.py >> /bis/cron_test.log 2>&1"
+    cron_job = f"*/{interval} {now_hour}-{end_hour} * * * /usr/bin/python3 /bis/source/cron_test.py >> /bis/cron_{username}.log 2>&1"
     subprocess.run(
         f'echo "{cron_job}" >> /etc/cron.d/cronjob',
         shell=True,
