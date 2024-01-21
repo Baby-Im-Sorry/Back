@@ -1,7 +1,9 @@
+import asyncio
 from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.base import JobLookupError
 from inference_pipeline import inference_pipeline
+from aioscheduler import TimedScheduler
 
 
 def convert_endtime(endtime_str):
@@ -17,31 +19,42 @@ def convert_endtime(endtime_str):
     return end_datetime
 
 
-def start_scheduler(username, interval, endtime, request_id, Websocket):
+def sync_inference_pipeline(websocket, request_id):
+    asyncio.run(inference_pipeline(websocket, request_id))
+
+
+async def start_scheduler(
+    username, interval, endtime, scheduler, request_id, websocket
+):
+    # FIXME: APscheduler를 쓰면 비동기 처리가 안됨. 그러나 웹소켓 통신은 비동기 처리가 필요하기 때문에 비동기 처리가 가능한 scheduler를 사용해야함.
+
     if scheduler is None:
-        scheduler = BackgroundScheduler()
+        scheduler = TimedScheduler()
 
     # TODO: endtime을 Datetime 객체로 변경
     endtime = convert_endtime(endtime)
 
-    scheduler.add_job(
+    if await scheduler.get_job(job_id=username):
+        await scheduler.remove_job(job_id=username)
+
+    await scheduler.add_job(
         func=inference_pipeline,
         id=username,
-        args=[Websocket, request_id],
+        args=[websocket, request_id],
         trigger="interval",
         minutes=int(interval),
         end_date=endtime,
     )
 
-    if not scheduler.running:
-        scheduler.start()
+    # if not scheduler.running:
+    #     scheduler.start()
 
     return scheduler
 
 
-def end_scheduler(username, scheduler):
+async def end_scheduler(username, scheduler):
     try:
-        scheduler.remove_job(job_id=username)
+        await scheduler.remove_job(job_id=username)
     except JobLookupError:
         print("Job does not exist")
     scheduler.shutdown()
