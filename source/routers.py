@@ -38,15 +38,15 @@ def startBriefing(
         return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
 
 
-@router.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    change_stream = bf_collection.watch()
-    try:
-        while True:
-            change = next(change_stream)
-            await websocket.send_text("변화 감지!")
-    except Exception as e:
-        print(f"Error: {e}")
-    finally:
-        await websocket.close()
+# @router.websocket("/ws")
+# async def websocket_endpoint(websocket: WebSocket):
+#     await websocket.accept()
+#     change_stream = bf_collection.watch()
+#     try:
+#         while True:
+#             change = next(change_stream)
+#             await websocket.send_text("변화 감지!")
+#     except Exception as e:
+#         print(f"Error: {e}")
+#     finally:
+#         await websocket.close()
