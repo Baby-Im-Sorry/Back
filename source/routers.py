@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Form, HTTPException, WebSocket
 from models import check_user, save_request
-from run_cron import start_cron, end_cron
+from run_cron import start_scheduler, end_scheduler
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.jobstores.base import JobLookupError
+import atexit
 from models import briefing_collection as bf_collection
 
 router = APIRouter()
@@ -22,7 +25,6 @@ def login(username: str = Form(...)):
     except HTTPException as e:
         return HTTPException(status_code=500, detail=f"Login Error: {str(e)}")
 
-
 @router.post("/startBriefing")
 def startBriefing(
     username: str = Form(...),
@@ -32,7 +34,7 @@ def startBriefing(
     try:
         interval = int(interval)
         request_id = save_request(username, interval, endtime)
-        start_cron(username, interval, endtime)
+        start_scheduler(username, interval, endtime)
         return {"message": "success", "request_id": str(request_id)}
     except HTTPException as e:
         return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
@@ -43,7 +45,7 @@ def endBriefing(
     username: str = Form(...),
 ):
     try:
-        end_cron(username)
+        end_scheduler(username)
         return {"message": "success"}
     except HTTPException as e:
         return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
