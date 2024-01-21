@@ -1,55 +1,32 @@
-import subprocess
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.daily import DailyTrigger
 from apscheduler.jobstores.base import JobLookupError
+from inference_pipeline import inference_pipeline
 
 scheduler = BackgroundScheduler()
 
 
-def job_function(username):
-    print(f"사용자 {username}에 대한 예약 작업이 실행되었습니다.")
-    
-    # inference_pipeline.py 파일을 실행하는 명령어
-    command = f"인퍼런스모델py실행"
-    
-    try:
-        # subprocess를 사용하여 명령어 실행
-        subprocess.run(command, shell=True, check=True)
-        print("inference_pipeline.py가 성공적으로 실행되었습니다.")
-    except subprocess.CalledProcessError as e:
-        print(f"오류 발생: {e}")
-
-
-def start_scheduler(username, interval, endtime):
-    global scheduler, current_username
-
-    # Initialize the scheduler if it's not already initialized
+def start_scheduler(username, interval, endtime, request_id, Websocket):
     if scheduler is None:
-        initialize_scheduler()
+        scheduler = BackgroundScheduler()
 
-    # Set the current_username
-    current_username = username
-
-    end_hour = int(endtime.split(":")[0])
-    trigger = DailyTrigger(hour=end_hour)
-
-    # Add the job to the scheduler
     scheduler.add_job(
-        job_function,
-        args=[username],
-        trigger=trigger,
+        func=inference_pipeline,
         id=username,
-        replace_existing=True,
+        args=[Websocket, request_id],
+        trigger="interval",
+        minutes=int(interval),
+        end_date=endtime,
     )
+    # TODO: endtime을 Datetime 객체로 변경
+    # TODO: interval을 파싱해서 시간, 분 단위로 변경
 
-    # Start the scheduler if not already started
     if not scheduler.running:
         scheduler.start()
 
 
 def end_scheduler(username):
     try:
-        scheduler.remove_job(username)
+        scheduler.remove_job(job_id=username)
     except JobLookupError:
         pass
     scheduler.shutdown()
