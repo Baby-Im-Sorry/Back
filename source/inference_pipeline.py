@@ -11,10 +11,10 @@ import time
 #     return args
 
 
-async def inference_pipeline(websocket, request_id):
+def inference_pipeline(request_id):
     # args = parse_args()
     # TODO: Implement inference pipeline
     temp_str = f"test_{time.time()}"
     models.save_briefing(briefing=temp_str, request_id=request_id)
-    await websocket.send_text(temp_str)
+    # await websocket.send_text(temp_str)
     # return temp_str
