@@ -16,7 +16,7 @@ def save_user(username: str):
     return user_id
 
 
-def save_request(username: str, interval: int, endtime: str):
+def save_request(username: str, interval: int, endtime: str, is_active: bool):
     # request_name: 요청 이름 -> 그날 날짜 시간으로 자동 저장
     parsed_time = datetime.datetime.strptime(endtime, "%I:%M %p")
     endtime = parsed_time.strftime("%H:%M")
@@ -25,6 +25,7 @@ def save_request(username: str, interval: int, endtime: str):
         "request_name": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "interval": interval,
         "endtime": endtime,
+        "is_active": is_active,
     }
     request_id = request_collection.insert_one(request_data).inserted_id
     return request_id
