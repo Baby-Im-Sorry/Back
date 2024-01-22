@@ -57,7 +57,7 @@ async def websocket_endpoint(
     global scheduler
     interval = int(interval)
     request_id = save_request(username, interval, endtime)
-    scheduler = await start_scheduler(
+    scheduler = start_scheduler(
         username, interval, endtime, scheduler, request_id, websocket
     )
 
