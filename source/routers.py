@@ -45,39 +45,36 @@ def login(username: str = Form(...)):
 #     except HTTPException as e:
 #         return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
 
+
 def new_request(username, interval, endtime):
     global scheduler
     interval = int(interval)
     request_id = save_request(username, interval, endtime, is_active=True)
     # 스케쥴러에 작업 등록
-    scheduler = start_scheduler( 
-        username, interval, endtime, scheduler, request_id
-    )
+    scheduler = start_scheduler(username, interval, endtime, scheduler, request_id)
     return request_id
 
+
 async def watch_db(request_id, websocket):
-    print('req_id: ',request_id)
+    print("req_id: ", request_id)
     if request_id != None:
-         # Change Streams 파이프라인 설정: 특정 request_id를 갖는 새로운 문서만 감지
+        # Change Streams 파이프라인 설정: 특정 request_id를 갖는 새로운 문서만 감지
         try:
-            pipeline = [
-                {"$match": {
-                    "fullDocument.request_id": ObjectId(request_id)
-                }}
-            ]
+            pipeline = [{"$match": {"fullDocument.request_id": ObjectId(request_id)}}]
             change_stream = bf_collection.watch(pipeline)
             while True:
                 change = next(change_stream)
                 # 새로 추가된 데이터의 내용을 웹소켓을 통해 전송
-                print('newdata : ------------------------')
-                new_data = change["fullDocument"]['briefing']
+                print("newdata : ------------------------")
+                new_data = change["fullDocument"]["briefing"]
                 print(new_data)
-                await websocket.send(f"새로운 데이터 추가됨:{new_data}")
-                print('keep going')
+                await websocket.send_text(f"새로운 데이터 추가됨:{new_data}")
+                print("keep going")
         except Exception as e:
             print(f"Error: {e}")
         finally:
             await websocket.close()
+
 
 # DB 감지 코드 (앱 실행 중일 때)
 @router.websocket("/ws")
@@ -93,12 +90,13 @@ async def websocket_endpoint(
     if latest_request_id != None:
         # request_id의 is_active 확인
         is_active = rq_collection.find_one({"_id": latest_request_id})["is_active"]
-        if is_active: # 진행중인 브리핑이 있다면, 종료
+        if is_active:  # 진행중인 브리핑이 있다면, 종료
             endBriefing(username)
     # 새로운 요청 생성
     new_request_id = new_request(username, interval, endtime)
     # 웹소켓을 통해 지속적인 업데이트를 front에 날려줌.
     await watch_db(new_request_id, websocket)
+
 
 # 재접속할 때 DB 불러오기
 @router.get("/getCurrentBriefing")
@@ -121,6 +119,7 @@ async def getCurrentBriefing(username):
     #         return {"message": "No 'active' request running.", "content": None}
     return {"getCurrentBriefing"}
 
+
 # 해당 사용자의 가장 최신 request_id 찾기
 def get_latest_request(username):
     latest_request = rq_collection.find_one(
@@ -129,6 +128,7 @@ def get_latest_request(username):
     if latest_request == None:
         return None
     return ObjectId(latest_request["_id"])
+
 
 @router.post("/endBriefing")
 def endBriefing(
