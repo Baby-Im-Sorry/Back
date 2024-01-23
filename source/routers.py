@@ -68,7 +68,7 @@ async def watch_db(request_id, websocket):
                 print("newdata : ------------------------")
                 new_data = change["fullDocument"]["briefing"]
                 print(new_data)
-                await websocket.send_text(f"새로운 데이터 추가됨:{new_data}")
+                await websocket.send_text(f"새로운 데이터 추가됨: {new_data}")
                 print("keep going")
         except Exception as e:
             print(f"Error: {e}")
@@ -99,25 +99,25 @@ async def websocket_endpoint(
 
 
 # 재접속할 때 DB 불러오기
-@router.get("/getCurrentBriefing")
-async def getCurrentBriefing(username):
-    # latest_request_id = get_latest_request(username)
-    # if latest_request_id:
-    #     # request_id의 is_active 확인
-    #     is_active = rq_collection.find_one({"_id": latest_request_id})["is_active"]
-    #     if is_active: # 진행중인 브리핑이 있다면, 해당 request_id를 갖는 모든 briefing 데이터 찾기
-    #         briefings = bf_collection.find({"request_id": latest_request_id})
-    #         # MongoDB cursor를 리스트로 변환 (비동기 방식이라면 async for 사용)
-    #         briefing_list = []
-    #         for briefing in briefings:
-    #             briefing_list.append(briefing["briefing"])
-    #         print(briefing_list)
-    #         # 결과 반환 & 웹소켓을 통해 지속적인 업데이트를 front 에 날려줌.
-    #         await watch_db(latest_request_id, websocket)
-    #         return {"message": "success", "content": briefing_list}
-    #     else:
-    #         return {"message": "No 'active' request running.", "content": None}
-    return {"getCurrentBriefing"}
+# @router.get("/getCurrentBriefing")
+# async def getCurrentBriefing(username):
+# latest_request_id = get_latest_request(username)
+# if latest_request_id:
+#     # request_id의 is_active 확인
+#     is_active = rq_collection.find_one({"_id": latest_request_id})["is_active"]
+#     if is_active: # 진행중인 브리핑이 있다면, 해당 request_id를 갖는 모든 briefing 데이터 찾기
+#         briefings = bf_collection.find({"request_id": latest_request_id})
+#         # MongoDB cursor를 리스트로 변환 (비동기 방식이라면 async for 사용)
+#         briefing_list = []
+#         for briefing in briefings:
+#             briefing_list.append(briefing["briefing"])
+#         print(briefing_list)
+#         # 결과 반환 & 웹소켓을 통해 지속적인 업데이트를 front 에 날려줌.
+#         await watch_db(latest_request_id, websocket)
+#         return {"message": "success", "content": briefing_list}
+#     else:
+#         return {"message": "No 'active' request running.", "content": None}
+# return {"getCurrentBriefing"}
 
 
 # 해당 사용자의 가장 최신 request_id 찾기
@@ -131,9 +131,8 @@ def get_latest_request(username):
 
 
 @router.post("/endBriefing")
-def endBriefing(
-    username: str = Form(...),
-):
+def endBriefing(username: str = Form(...)):
+    # await websocket.close()
     latest_request_id = get_latest_request(username)
     rq_collection.update_one({"_id": latest_request_id}, {"$set": {"is_active": False}})
     try:
