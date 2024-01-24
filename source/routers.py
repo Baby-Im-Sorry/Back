@@ -9,6 +9,7 @@ from bson import ObjectId
 router = APIRouter()
 scheduler = BackgroundScheduler()
 
+websocket_list = []
 
 @router.get("/")
 async def root():
@@ -69,6 +70,9 @@ async def watch_db(request_id, websocket):
                 new_data = change["fullDocument"]["briefing"]
                 print(new_data)
                 await websocket.send_text(f"새로운 데이터 추가됨: {new_data}")
+                is_stop = await websocket.receive_text()
+                if is_stop == 'True':
+                    websocket.close()
                 print("keep going")
         except Exception as e:
             print(f"Error: {e}")
@@ -85,6 +89,7 @@ async def websocket_endpoint(
     endtime: str = Query(None),
 ):
     await websocket.accept()
+    websocket_list.append(websocket)
     latest_request_id = get_latest_request(username)
 
     if latest_request_id != None:
@@ -129,9 +134,12 @@ def get_latest_request(username):
         return None
     return ObjectId(latest_request["_id"])
 
+@router.websocket("/endBriefing")
 
 @router.post("/endBriefing")
 def endBriefing(username: str = Form(...)):
+    websocket_list[0] #몇번째가 누구건지 어케 아냐.
+    #list 자료구조가 아닌 dict을 사용해서 key에는 username을 value엔 websocket 객체를.
     # await websocket.close()
     latest_request_id = get_latest_request(username)
     rq_collection.update_one({"_id": latest_request_id}, {"$set": {"is_active": False}})
