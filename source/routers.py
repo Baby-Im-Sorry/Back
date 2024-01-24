@@ -5,6 +5,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from models import briefing_collection as bf_collection
 from models import request_collection as rq_collection
 from bson import ObjectId
+import asyncio
 
 router = APIRouter()
 scheduler = BackgroundScheduler()
@@ -55,30 +56,30 @@ def new_request(username, interval, endtime):
     scheduler = start_scheduler(username, interval, endtime, scheduler, request_id)
     return request_id
 
+async def listen_for_stop_signal(websocket, stop_signal):
+    while True:
+        message = await websocket.receive_text()
+        if message == 'True':
+            stop_signal.set()
 
 async def watch_db(request_id, websocket):
-    print("req_id: ", request_id)
-    if request_id != None:
-        # Change Streams 파이프라인 설정: 특정 request_id를 갖는 새로운 문서만 감지
-        try:
-            pipeline = [{"$match": {"fullDocument.request_id": ObjectId(request_id)}}]
-            change_stream = bf_collection.watch(pipeline)
-            while True:
-                change = next(change_stream)
-                # 새로 추가된 데이터의 내용을 웹소켓을 통해 전송
-                print("newdata : ------------------------")
-                new_data = change["fullDocument"]["briefing"]
-                print(new_data)
-                await websocket.send_text(f"새로운 데이터 추가됨: {new_data}")
-                is_stop = await websocket.receive_text()
-                if is_stop == 'True':
-                    websocket.close()
-                print("keep going")
-        except Exception as e:
-            print(f"Error: {e}")
-        finally:
-            await websocket.close()
+    stop_signal = asyncio.Event()
+    asyncio.create_task(listen_for_stop_signal(websocket, stop_signal))
 
+    try:
+        pipeline = [{"$match": {"fullDocument.request_id": ObjectId(request_id)}}]
+        change_stream = bf_collection.watch(pipeline)
+        while not stop_signal.is_set():
+            change = next(change_stream)
+            new_data = change["fullDocument"]["briefing"]
+            await websocket.send_text(f"새로운 데이터 추가됨: {new_data}")
+            # 여기서는 stop_signal 상태를 확인하여 루프를 중단할 수 있음
+            if stop_signal.is_set():
+                print('STOPPED!!')
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        await websocket.close()
 
 # DB 감지 코드 (앱 실행 중일 때)
 @router.websocket("/ws")
