@@ -5,7 +5,7 @@ from apscheduler.jobstores.base import JobLookupError
 from inference_pipeline import inference_pipeline
 # from aioscheduler import TimedScheduler
 
-
+# scheduler 작업에 end_time 넣을 떄 사용
 def convert_endtime(endtime_str):
     # 현재 날짜 가져오기
     current_date = datetime.now().date()
