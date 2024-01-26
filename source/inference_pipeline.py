@@ -1,20 +1,14 @@
+from datetime import datetime
+import pytz
 import models
 import time
 
-# import argparse
-
-
-# def parse_args():
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument("--request_id", type=str, required=True)
-#     args = parser.parse_args()
-#     return args
-
 
 def inference_pipeline(request_id):
-    # args = parse_args()
     # TODO: Implement inference pipeline
-    temp_str = f"test_{time.time()}"
+    timestamp = time.time()
+    seoul_timezone = pytz.timezone("Asia/Seoul")
+    date_time_seoul = datetime.fromtimestamp(timestamp, seoul_timezone)
+    formatted_time = date_time_seoul.strftime("%Y-%m-%d %H:%M:%S")
+    temp_str = f"test_{formatted_time}"
     models.save_briefing(briefing=temp_str, request_id=request_id)
-    # await websocket.send_text(temp_str)
-    # return temp_str
