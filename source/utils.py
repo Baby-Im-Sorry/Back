@@ -4,6 +4,9 @@ from models import save_request
 from scheduler import start_scheduler, end_scheduler
 from models import request_collection as rq_collection, briefing_collection as bf_collection
 from bson import ObjectId
+from motor.motor_asyncio import AsyncIOMotorClient
+from config_db import DATABASE_URI
+from bson import ObjectId
 
 scheduler = BackgroundScheduler()
 
@@ -24,11 +27,11 @@ def stop_active_breifing(username):
     if latest_request_id != None:
         is_active = rq_collection.find_one({"_id": latest_request_id})["is_active"]
         if is_active:
-            endBriefing(username, latest_request_id)
+            endBriefing2(username, latest_request_id)
 
 
 # 특정 request의 is_active 를 false로 바꾸고, 스케쥴러에서도 삭제
-def endBriefing(username, request_id):
+def endBriefing2(username, request_id):
     rq_collection.update_one({"_id": request_id}, {"$set": {"is_active": False}})
     try:
         end_scheduler(username, scheduler)
@@ -38,22 +41,24 @@ def endBriefing(username, request_id):
         return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
 
 
-# DB 변화 감지해서 front에 msg 보내기
+
+
 async def watch_db(request_id, websocket):
+    # motor 이용해서 비동기로 mongoDB 접근
+    client = AsyncIOMotorClient(DATABASE_URI)
+    db = client.BIS
+    bf_collection2 = db.briefings
+    
     try:
-        while True:
-            # await websocket.send_text('보낸다!')
-            pipeline = [{"$match": {"fullDocument.request_id": ObjectId(request_id)}}]
-            change_stream = bf_collection.watch(pipeline)
-            while True:
-                # print(change_stream)
-                change = next(change_stream)
-                new_data = change["fullDocument"]["briefing"]
-                print(new_data)
-                await websocket.send_text('보낸다~')
+        pipeline = [{"$match": {"fullDocument.request_id": ObjectId(request_id)}}]
+        change_stream = bf_collection2.watch(pipeline)
+        async for change in change_stream:
+            new_data = change["fullDocument"]["briefing"]
+            await websocket.send_text(f'{new_data}')
     except Exception as e:
         print(f"Error: {e}")
     finally:
+        await change_stream.close()
         await websocket.close()
 
 

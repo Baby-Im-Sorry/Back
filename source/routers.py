@@ -2,7 +2,7 @@ from fastapi import APIRouter, Form, HTTPException, WebSocket, Query
 from apscheduler.schedulers.background import BackgroundScheduler
 from models import check_user, request_collection as rq_collection
 from scheduler import end_scheduler
-from utils import watch_db, get_latest_request, new_request
+from utils import watch_db, get_latest_request, new_request, endBriefing2
 
 router = APIRouter()
 scheduler = BackgroundScheduler()
@@ -42,4 +42,5 @@ async def websocket_endpoint(
 @router.post("/endBriefing")
 def endBriefing(username: str = Form(...)):
     latest_request_id = get_latest_request(username)
+    endBriefing2(username, latest_request_id)
     # 로직 추가해야함..
