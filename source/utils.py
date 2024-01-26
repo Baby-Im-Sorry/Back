@@ -27,11 +27,19 @@ def stop_active_breifing(username):
     if latest_request_id != None:
         is_active = rq_collection.find_one({"_id": latest_request_id})["is_active"]
         if is_active:
+<<<<<<< Updated upstream
             endBriefing2(username, latest_request_id)
 
 
 # 특정 request의 is_active 를 false로 바꾸고, 스케쥴러에서도 삭제
 def endBriefing2(username, request_id):
+=======
+            endBriefing_2(username, latest_request_id)
+
+
+# 특정 request의 is_active 를 false로 바꾸고, 스케쥴러에서도 삭제
+def endBriefing_2(username, request_id):
+>>>>>>> Stashed changes
     rq_collection.update_one({"_id": request_id}, {"$set": {"is_active": False}})
     try:
         end_scheduler(username, scheduler)
@@ -70,3 +78,13 @@ def get_latest_request(username):
     if latest_request == None:
         return None
     return ObjectId(latest_request["_id"])
+
+
+# 해당 사용자의 db내역 불러오기
+def get_current_breifing(username):
+    latest_request_id = get_latest_request(username)
+    reloading_db = bf_collection.find_one(latest_request_id["briefing"])
+    if reloading_db == None:
+        return None
+    return reloading_db
+
