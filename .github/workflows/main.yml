@@ -1,14 +1,53 @@
-name: Simple Workflow
+name: Docker Build and Deploy
 
 on:
   push:
-    branches: ['main']  # 코드가 main 브랜치로 푸시될 때 트리거
+    branches:
+      - main
 
 jobs:
-  build:
-    name: Simple Workflow
-    runs-on: ubuntu-latest  # 실행 환경을 Ubuntu 최신 버전으로 지정
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Hello World
-      run: echo "Hello, World!"  # Hello World 메시지 출력하는 단계
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Generate Environment Variables File for Production
+      run: |
+        echo "DATABASE_ID=$DATABASE_ID" >> .env.production
+        echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> .env.production
+        echo "DATABASE_URI=$DATABASE_URI" >> .env.production
+      env:
+        DATABASE_ID: ${{ secrets.DATABASE_ID }}
+        DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        DATABASE_URI: ${{ secrets.DATABASE_URI }}
+
+    - name: Build Docker Image
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/bis:dev .
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/bis:dev
+  
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+    
+    - name: Run Docker on EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ec2-user
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        port: 22
+        script_stop: true
+        script: |
+          if [ $(docker ps -aq -f name=biscon) ]; then
+            docker rm -f biscon
+          fi
+          docker rmi -f $(docker image ls -a -q)
+          docker pull ${{ secrets.DOCKER_USERNAME }}/bis:dev
+          docker run -d --name biscon -e TZ=Asia/Seoul -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/bis:dev
