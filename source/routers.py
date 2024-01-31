@@ -9,6 +9,7 @@ from utils import (
     new_request,
     endBriefing_worker,
     get_current_breifing,
+    get_all_request,
 )
 
 router = APIRouter()
@@ -18,7 +19,9 @@ logger = logging.getLogger(__name__)
 """
 /login          [post]      (username)
 /ws             [websocket] (username, interval, endtime)
+/reloadBriefing [websocket] (username)
 /endBriefing    [post]      (username)
+/getAllRequest  [post]      (username)
 """
 
 
@@ -69,3 +72,10 @@ async def reloadBriefing(
 def endBriefing(username: str = Form(...)):
     logger.info("endBriefing()")
     return endBriefing_worker(username)
+
+
+@router.post("/getAllRequest")
+def getAllRequest(username: str = Form(...)):
+    logger.info("getAllRequest()")
+    return get_all_request(username)
+

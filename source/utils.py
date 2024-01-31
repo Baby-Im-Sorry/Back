@@ -109,3 +109,21 @@ def get_current_breifing(username):
     briefing_data = get_briefing(latest_request_id) # 해당 request의 모든 briefing 데이터 조회
     print('브리핑 데이터: ',briefing_data)
     return briefing_data
+
+# 사용자의 모든 request 불러오기
+def get_all_request(username):
+    logger.info("get_all_request()")
+    # request_id, request_name, endtime 필드만 추출
+    all_request = rq_collection.find(
+        {"username": username},
+        {"_id": 1, "request_name": 1, "endtime": 1}
+    )
+    print(all_request)
+    # 리스트에 담기
+    request_list = [
+        {"request_id": str(request.get("_id")),
+        "request_name": request.get("request_name"), 
+        "endtime": request.get("endtime")}
+        for request in all_request
+    ]
+    return request_list
