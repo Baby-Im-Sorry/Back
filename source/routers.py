@@ -9,6 +9,7 @@ from utils import (
     new_request,
     endBriefing_worker,
     get_current_breifing,
+    get_briefing,
     get_all_request,
 )
 
@@ -79,3 +80,7 @@ def getAllRequest(username: str = Form(...)):
     logger.info("getAllRequest()")
     return get_all_request(username)
 
+@router.post("/getBriefing")
+def getBriefing(request_id: str = Form(...)):
+    logger.info("getBriefing()")
+    return get_briefing(request_id)

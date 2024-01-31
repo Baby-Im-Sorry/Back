@@ -95,9 +95,9 @@ async def send_briefing_data(websocket, username: str):
 def get_briefing(request_id):
     logger.info("get_briefing()")
     try: 
-        cursor = bf_collection.find({"request_id": ObjectId(request_id)})
-        briefing_data = [doc.get("briefing") for doc in cursor] # bf_collection 의 briefing 필드만 추출
-        return briefing_data
+        briefings = bf_collection.find({"request_id": ObjectId(request_id)})
+        briefing_list = [briefing.get("briefing") for briefing in briefings] # bf_collection 의 briefing 필드만 추출
+        return briefing_list
     except HTTPException as e:
         return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
 
@@ -118,7 +118,6 @@ def get_all_request(username):
         {"username": username},
         {"_id": 1, "request_name": 1, "endtime": 1}
     )
-    print(all_request)
     # 리스트에 담기
     request_list = [
         {"request_id": str(request.get("_id")),
