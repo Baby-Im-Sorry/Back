@@ -107,7 +107,6 @@ def get_current_breifing(username):
     logger.info("get_current_breifing()")
     latest_request_id = get_latest_request(username) # 사용자의 가장 최근 request
     briefing_data = get_briefing(latest_request_id) # 해당 request의 모든 briefing 데이터 조회
-    print('브리핑 데이터: ',briefing_data)
     return briefing_data
 
 # 사용자의 모든 request 불러오기
@@ -125,4 +124,5 @@ def get_all_request(username):
         "endtime": request.get("endtime")}
         for request in all_request
     ]
+    request_list.reverse()  # 내림차순 정렬
     return request_list
