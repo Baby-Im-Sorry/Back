@@ -76,23 +76,26 @@ async def watch_db(request_id, websocket):
         await change_stream.close()
         await websocket.close()
 
-
-# 해당 사용자의 db내역 불러오기
-def get_current_breifing(username):
-    latest_request_id = get_latest_request(username)
-    # reloading_db = bf_collection.find({"request_id": ObjectId(latest_request_id)})[
-    #     "briefing"
-    # ]
-    cursor = bf_collection.find({"request_id": ObjectId(latest_request_id)})
-    briefing_data = [doc.get("briefing") for doc in cursor]
-    print(briefing_data)
-    if briefing_data == None:
-        return None
-    return briefing_data
-
-
-# db를 불러온 후 front로 보내기
+# DB에서 briefing 조회 후 front로 보내기
 async def send_briefing_data(websocket, username: str):
     briefing_data = get_current_breifing(username)
     if briefing_data is not None:
         await websocket.send_json({"briefing_data": briefing_data})
+
+
+# DB 조회하기 (모든 briefing 데이터 조회)
+def get_briefing(request_id):
+    try: 
+        cursor = bf_collection.find({"request_id": ObjectId(request_id)})
+        briefing_data = [doc.get("briefing") for doc in cursor] # bf_collection 의 briefing 필드만 추출
+        return briefing_data
+    except HTTPException as e:
+        return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
+
+
+# 해당 사용자의 db내역 불러오기
+def get_current_breifing(username):
+    latest_request_id = get_latest_request(username) # 사용자의 가장 최근 request
+    briefing_data = get_briefing(latest_request_id) # 해당 request의 모든 briefing 데이터 조회
+    print('브리핑 데이터: ',briefing_data)
+    return briefing_data
