@@ -1,14 +1,17 @@
 from pymongo.collection import Collection
 from config_db import db
 import datetime
+import logging
 
 # user 테이블 불러오기
 user_collection: Collection = db["users"]
 request_collection: Collection = db["requests"]
 briefing_collection: Collection = db["briefings"]
 
+logger = logging.getLogger(__name__)
 
 def save_user(username: str):
+    logger.info("save_user()")
     user_data = {
         "username": username,
     }
@@ -17,6 +20,7 @@ def save_user(username: str):
 
 
 def save_request(username: str, interval: int, endtime: str, is_active: bool):
+    logger.info("save_request()")
     # request_name: 요청 이름 -> 그날 날짜 시간으로 자동 저장
     parsed_time = datetime.datetime.strptime(endtime, "%I:%M %p")
     endtime = parsed_time.strftime("%H:%M")
@@ -32,6 +36,7 @@ def save_request(username: str, interval: int, endtime: str, is_active: bool):
 
 
 def save_briefing(request_id: str, briefing: str):
+    logger.info("save_briefing()")
     briefing_data = {
         "request_id": request_id,
         "briefing": briefing,
@@ -41,6 +46,7 @@ def save_briefing(request_id: str, briefing: str):
 
 
 def check_user(username: str):
+    logger.info("check_user()")
     existing_user = user_collection.find_one({"username": username})
 
     if not existing_user:  # 없는 유저 -> 회원가입

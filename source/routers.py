@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Form, HTTPException, WebSocket, Query
 from apscheduler.schedulers.background import BackgroundScheduler
+import logging
 from models import check_user
 from utils import (
     send_briefing_data,
@@ -12,6 +13,7 @@ from utils import (
 
 router = APIRouter()
 scheduler = BackgroundScheduler()
+logger = logging.getLogger(__name__)
 
 """
 /login          [post]      (username)
@@ -22,6 +24,7 @@ scheduler = BackgroundScheduler()
 
 @router.post("/login")
 def login(username: str = Form(...)):
+    logger.info("login()")
     try:
         result = check_user(username)
         if result["msg"] == "signup":
@@ -39,6 +42,7 @@ async def websocket_endpoint(
     interval: str = Query(None),
     endtime: str = Query(None),
 ):
+    logger.info("websocket_endpoint()")
     # 웹소켓 연결
     await websocket.accept()
     # 새 요청 DB에 저장 및 스케쥴러에 등록
@@ -53,6 +57,7 @@ async def reloadBriefing(
     websocket: WebSocket,
     username: str = Query(None),
 ):
+    logger.info("reloadBriefing()")
     await websocket.accept()
     # reloaded된 briefing을 front로 날려줌
     await send_briefing_data(websocket, username)
@@ -62,4 +67,5 @@ async def reloadBriefing(
 
 @router.post("/endBriefing")
 def endBriefing(username: str = Form(...)):
-    endBriefing_worker(username)
+    logger.info("endBriefing()")
+    return endBriefing_worker(username)

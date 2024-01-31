@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import router
+import logging
 
 app = FastAPI()
 
@@ -17,3 +18,5 @@ app.add_middleware(
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
+logging.basicConfig(level=logging.INFO) # 로그

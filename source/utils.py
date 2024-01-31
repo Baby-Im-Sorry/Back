@@ -10,12 +10,15 @@ from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 from config_db import DATABASE_URI
 from bson import ObjectId
+import logging
 
+logger = logging.getLogger(__name__)
 scheduler = BackgroundScheduler()
 
 
 # 해당 사용자의 가장 최신 request_id 찾기
 def get_latest_request(username):
+    logger.info("get_latest_request()")
     latest_request = rq_collection.find_one(
         {"username": username}, sort=[("request_name", -1)]  # -1 : 내림차순 정렬
     )
@@ -26,6 +29,7 @@ def get_latest_request(username):
 
 # 특정 request의 is_active 를 false로 바꾸고, 스케쥴러에서도 삭제
 def endBriefing_worker(username):
+    logger.info("endBriefing_worker()")
     latest_request_id = get_latest_request(username)
     rq_collection.update_one(
         {"_id": ObjectId(latest_request_id)}, {"$set": {"is_active": False}}
@@ -33,13 +37,14 @@ def endBriefing_worker(username):
     try:
         end_scheduler(username, scheduler)
         print("스케쥴러에서 해당 request 삭제 성공")
-        return {"message": "success"}
+        return {"message": "브리핑 성공적으로 종료"}
     except HTTPException as e:
         return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
 
 
 # 진행중인 브리핑 있는지 확인 후, 종료
 def stop_active_breifing(username):
+    logger.info("stop_active_breifing()")
     latest_request_id = get_latest_request(username)
     if latest_request_id != None:
         is_active = rq_collection.find_one({"_id": ObjectId(latest_request_id)})[
@@ -51,6 +56,7 @@ def stop_active_breifing(username):
 
 # 기존 브리핑 종료 & 새 요청 등록
 def new_request(username, interval, endtime):
+    logger.info("new_request()")
     stop_active_breifing(username)  # 진행중인 브리핑 종료
     # DB에 request 저장 및 스케쥴러에 작업 등록
     global scheduler
@@ -61,6 +67,7 @@ def new_request(username, interval, endtime):
 
 
 async def watch_db(request_id, websocket):
+    logger.info("watch_db()")
     # motor 이용해서 비동기로 mongoDB 접근
     client = AsyncIOMotorClient(DATABASE_URI)
     db = client.BIS
@@ -78,6 +85,7 @@ async def watch_db(request_id, websocket):
 
 # DB에서 briefing 조회 후 front로 보내기
 async def send_briefing_data(websocket, username: str):
+    logger.info("send_briefing_data()")
     briefing_data = get_current_breifing(username)
     if briefing_data is not None:
         await websocket.send_json({"briefing_data": briefing_data})
@@ -85,6 +93,7 @@ async def send_briefing_data(websocket, username: str):
 
 # DB 조회하기 (모든 briefing 데이터 조회)
 def get_briefing(request_id):
+    logger.info("get_briefing()")
     try: 
         cursor = bf_collection.find({"request_id": ObjectId(request_id)})
         briefing_data = [doc.get("briefing") for doc in cursor] # bf_collection 의 briefing 필드만 추출
@@ -95,6 +104,7 @@ def get_briefing(request_id):
 
 # 해당 사용자의 db내역 불러오기
 def get_current_breifing(username):
+    logger.info("get_current_breifing()")
     latest_request_id = get_latest_request(username) # 사용자의 가장 최근 request
     briefing_data = get_briefing(latest_request_id) # 해당 request의 모든 briefing 데이터 조회
     print('브리핑 데이터: ',briefing_data)
