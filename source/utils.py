@@ -1,5 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from fastapi import HTTPException
+from fastapi import HTTPException, Response
 from models import save_request
 from scheduler import start_scheduler, end_scheduler
 from models import (
@@ -11,6 +11,10 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from config_db import DATABASE_URI
 from bson import ObjectId
 import logging
+import os
+from openai import OpenAI
+from dotenv import load_dotenv
+import json
 
 logger = logging.getLogger(__name__)
 scheduler = BackgroundScheduler()
@@ -97,7 +101,8 @@ def get_briefing(request_id):
     try: 
         briefings = bf_collection.find({"request_id": ObjectId(request_id)})
         briefing_list = [briefing.get("briefing") for briefing in briefings] # bf_collection 의 briefing 필드만 추출
-        return briefing_list
+        return Response(content=json.dumps(briefing_list, ensure_ascii=False),
+                    media_type="application/json")
     except HTTPException as e:
         return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
 
