@@ -14,6 +14,7 @@ def save_user(username: str):
     logger.info("save_user()")
     user_schema = {
         "username": username,
+        "custom": []
     }
     user_id = user_collection.insert_one(user_schema).inserted_id
     return user_id
@@ -56,3 +57,12 @@ def check_user(username: str):
             return err
     if existing_user:  # 기존 유저 -> 로그인
         return {"msg": "login", "user_id": str(existing_user["_id"])}
+
+# user 테이블의 custom 필드 업데이트
+def update_custom(username: str, custom_list: list):
+    logger.info("update_custom()")
+    user_collection.update_one(
+        {"username": username},
+        {"$set": {"custom": custom_list}}   # 기존 value 값 덮어쓰기
+    )
+    return None

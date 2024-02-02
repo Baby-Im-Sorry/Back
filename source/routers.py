@@ -2,7 +2,8 @@ from fastapi import APIRouter, Form, HTTPException, WebSocket, Query, Response
 from apscheduler.schedulers.background import BackgroundScheduler
 import logging
 import json
-from models import check_user
+from models import check_user, update_custom
+from pydantic import BaseModel
 from utils import (
     send_briefing_data,
     watch_db,
@@ -12,7 +13,7 @@ from utils import (
     get_current_breifing,
     get_briefing,
     get_all_request,
-    chat_summary
+    chat_summary,
 )
 
 router = APIRouter()
@@ -92,8 +93,20 @@ def getBriefing(request_id: str = Form(...)):
 @router.post('/aiSummary')
 def aiSummary(request_id: str = Form(...)):
     logger.info('aiSummary')
-    
     #해당 user의 모든 allrequest -> 전체 request 중 특정 request 내 모든 Briefing
     briefing_data = get_briefing(request_id)
     return chat_summary(briefing_data)
     
+class CustomUpdateRequest(BaseModel):
+    username: str
+    custom_list: list
+
+@router.post('/updateCustom')
+def updateCustom(request_data: CustomUpdateRequest):
+    logger.info('updateCustom')
+    try:
+        update_custom(request_data.username, request_data.custom_list)
+        return "success to update Custom"
+    except Exception as e:
+        logger.error(f"Error during update: {e}")
+        raise HTTPException(status_code=500, detail="Fail to update Custom")
