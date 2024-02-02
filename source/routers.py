@@ -1,3 +1,4 @@
+import ast
 from fastapi import APIRouter, Form, HTTPException, WebSocket, Query, Response
 from apscheduler.schedulers.background import BackgroundScheduler
 import logging
@@ -13,6 +14,7 @@ from utils import (
     get_current_breifing,
     get_briefing,
     get_all_request,
+    chat_summary,
     chat_summary,
 )
 
@@ -83,6 +85,7 @@ def getAllRequest(username: str = Form(...)):
     logger.info("getAllRequest()")
     return get_all_request(username)
 
+
 @router.post("/getBriefing")
 def getBriefing(request_id: str = Form(...)):
     logger.info("getBriefing()")
@@ -90,29 +93,33 @@ def getBriefing(request_id: str = Form(...)):
     json_str = json.dumps(briefing_list, ensure_ascii=False)
     return Response(content=json_str, media_type="application/json; charset=UTF-8")
 
-@router.post('/aiSummary')
-def aiSummary(request_id: str = Form(...)):
-    logger.info('aiSummary')
-    #해당 user의 모든 allrequest -> 전체 request 중 특정 request 내 모든 Briefing
-    briefing_data = get_briefing(request_id)
-    return chat_summary(briefing_data)
-    
-class CustomUpdateRequest(BaseModel):
-    username: str
-    custom_list: list
 
-@router.post('/updateCustom')
-def updateCustom(request_data: CustomUpdateRequest):
-    logger.info('updateCustom')
+@router.post("/aiSummary")
+def aiSummary(request_id: str = Form(...)):
+    logger.info("aiSummary")
+    # 해당 user의 모든 allrequest -> 전체 request 중 특정 request 내 모든 Briefing
+    briefing_data = get_briefing(request_id)
+    summary = chat_summary(briefing_data)
+    return Response(content=summary, media_type="application/json; charset=UTF-8")
+
+
+@router.post("/updateCustom")
+def updateCustom(username: str = Form(...), custom_list: str = Form(...)):
+    logger.info("updateCustom")
     try:
-        update_custom(request_data.username, request_data.custom_list)
+        custom_list = json.loads(custom_list)
+        print(f"업데이트커스텀 custom_list : {custom_list}")
+        update_custom(username, custom_list)
         return "success to update Custom"
     except Exception as e:
         logger.error(f"Error during update: {e}")
         raise HTTPException(status_code=500, detail="Fail to update Custom")
 
-@router.post('/getCustom')
+
+@router.post("/getCustom")
 def getCustom(username: str = Form(...)):
-    logger.info('getCustom')
+    logger.info("getCustom")
     custom_list = get_custom(username)
-    return custom_list
+    print(f"겟커스텀 custom_list : {custom_list}")
+    json_str = json.dumps(custom_list, ensure_ascii=False)
+    return Response(content=json_str, media_type="application/json; charset=UTF-8")
