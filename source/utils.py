@@ -12,6 +12,7 @@ from config_db import DATABASE_URI
 from bson import ObjectId
 import logging
 import os
+import time
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -144,8 +145,8 @@ def chat_summary(briefing_data):
     client = OpenAI(api_key=api_key)
 
     prompt = f"""
-    아래 제공된 데이터는 무인카페의 데이터인데 이를 바탕으로 오늘 매장 상황을 3줄로 요약해줘. 
-    여성 손님과 남성 손님의 인원수를 내용에 담아주고, 탐색된 상황을 바탕으로 어떻게 매장을 운영하면 더 좋을 지 상세히 조언을 담아줘.
+    아래 제공된 데이터는 음료를 파는 무인카페의 데이터인데 이를 바탕으로 오늘 매장 상황을 3줄로 요약해줘. 
+    여성 손님과 남성 손님의 인원수를 내용에 담아주고, 탐색된 상황을 바탕으로 어떻게 매장을 운영하면 더 좋을 지 무인카페에 적합하게 상세히 조언을 담아줘.
     tone: Formal
     writing style: Business
     please write in korean langauge
@@ -153,6 +154,8 @@ def chat_summary(briefing_data):
     {briefing_data}
     """
     print(briefing_data)
+
+    start_time = time.time()
     chat_completion = client.chat.completions.create(
         messages=[
             {
@@ -164,5 +167,7 @@ def chat_summary(briefing_data):
         temperature = 0.7,
         top_p=0.9,
     )
-
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"LLM 돌리는데 걸린 시간: {execution_time} seconds")
     return chat_completion.choices[0].message.content
