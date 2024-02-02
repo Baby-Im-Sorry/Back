@@ -66,3 +66,9 @@ def update_custom(username: str, custom_list: list):
         {"$set": {"custom": custom_list}}   # 기존 value 값 덮어쓰기
     )
     return None
+
+def get_custom(username: str):
+    logger.info("get_custom()")
+    user = user_collection.find_one({"username": username})
+    custom_list = user['custom']
+    return custom_list

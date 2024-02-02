@@ -2,7 +2,7 @@ from fastapi import APIRouter, Form, HTTPException, WebSocket, Query, Response
 from apscheduler.schedulers.background import BackgroundScheduler
 import logging
 import json
-from models import check_user, update_custom
+from models import check_user, update_custom, get_custom
 from pydantic import BaseModel
 from utils import (
     send_briefing_data,
@@ -110,3 +110,9 @@ def updateCustom(request_data: CustomUpdateRequest):
     except Exception as e:
         logger.error(f"Error during update: {e}")
         raise HTTPException(status_code=500, detail="Fail to update Custom")
+
+@router.post('/getCustom')
+def getCustom(username: str = Form(...)):
+    logger.info('getCustom')
+    custom_list = get_custom(username)
+    return custom_list
