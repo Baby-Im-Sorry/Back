@@ -64,7 +64,7 @@ def new_request(username, interval, endtime):
     # DB에 request 저장 및 스케쥴러에 작업 등록
     global scheduler
     interval = int(interval)
-    request_id = save_request(username, interval, endtime, is_active=True)
+    request_id = save_request(username, interval, endtime)
     scheduler = start_scheduler(username, interval, endtime, scheduler, request_id)
     return request_id
 
