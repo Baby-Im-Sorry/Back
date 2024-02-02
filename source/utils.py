@@ -87,6 +87,7 @@ async def watch_db(request_id, websocket):
         await change_stream.close()
         await websocket.close()
 
+
 # DB에서 briefing 조회 후 front로 보내기
 async def send_briefing_data(websocket, username: str):
     logger.info("send_briefing_data()")
@@ -98,11 +99,11 @@ async def send_briefing_data(websocket, username: str):
 # DB 조회하기 (모든 briefing 데이터 조회)
 def get_briefing(request_id):
     logger.info("get_briefing()")
-    try: 
+    try:
         briefings = bf_collection.find({"request_id": ObjectId(request_id)})
-        briefing_list = [briefing.get("briefing") for briefing in briefings] # bf_collection 의 briefing 필드만 추출
-        return Response(content=json.dumps(briefing_list, ensure_ascii=False),
-                    media_type="application/json")
+        briefing_list = [briefing.get("briefing") for briefing in briefings]
+        json_str = json.dumps(briefing_list, ensure_ascii=False)
+        return Response(content=json_str, media_type="application/json; charset=UTF-8")
     except HTTPException as e:
         return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
 
@@ -110,27 +111,32 @@ def get_briefing(request_id):
 # 해당 사용자의 db내역 불러오기
 def get_current_breifing(username):
     logger.info("get_current_breifing()")
-    latest_request_id = get_latest_request(username) # 사용자의 가장 최근 request
-    briefing_data = get_briefing(latest_request_id) # 해당 request의 모든 briefing 데이터 조회
+    latest_request_id = get_latest_request(username)  # 사용자의 가장 최근 request
+    briefing_data = get_briefing(
+        latest_request_id
+    )  # 해당 request의 모든 briefing 데이터 조회
     return briefing_data
+
 
 # 사용자의 모든 request 불러오기
 def get_all_request(username):
     logger.info("get_all_request()")
     # request_id, request_name, endtime 필드만 추출
     all_request = rq_collection.find(
-        {"username": username},
-        {"_id": 1, "request_name": 1, "endtime": 1}
+        {"username": username}, {"_id": 1, "request_name": 1, "endtime": 1}
     )
     # 리스트에 담기
     request_list = [
-        {"request_id": str(request.get("_id")),
-        "request_name": request.get("request_name"), 
-        "endtime": request.get("endtime")}
+        {
+            "request_id": str(request.get("_id")),
+            "request_name": request.get("request_name"),
+            "endtime": request.get("endtime"),
+        }
         for request in all_request
     ]
     request_list.reverse()  # 내림차순 정렬
     return request_list
+
 
 # briefing data list을 받아서 AI 요약하는 함수
 def chat_summary(briefing_data):
@@ -138,7 +144,7 @@ def chat_summary(briefing_data):
     api_key = os.environ.get("OPENAI_API_KEY")
 
     client = OpenAI(api_key=api_key)
-    #user_custom = str(user_custom)
+    # user_custom = str(user_custom)
     chat_completion = client.chat.completions.create(
         messages=[
             {
@@ -151,5 +157,5 @@ def chat_summary(briefing_data):
         temperature = 0.7,
         top_p=0.9
     )
-    
+
     return chat_completion.choices[0].message.content
