@@ -32,14 +32,14 @@ class Realsense:
         self.pipeline.stop()
 
 
-def inference_pipeline(request_id):
+def inference_pipeline(username, request_id):
     cam = Realsense()
     start = time.time()
     res = []
     while True:
         _, _, img = cam.get_frame()
         try:
-            caption = yolo_basic.main(img)
+            caption = yolo_basic.main(username, img)
             res.append(caption)
         except:
             print("error")
@@ -51,4 +51,6 @@ def inference_pipeline(request_id):
     # formatted_time = date_time_seoul.strftime("%Y-%m-%d %H:%M:%S")
     # temp_str = f"test_{formatted_time}"
 
-    models.save_briefing(briefing=res[-1], request_id=request_id)
+    models.save_briefing(request_id,briefing=res[-1])
+    #models.save_briefing(request_id, temp_str)
+

@@ -23,7 +23,7 @@ def start_scheduler(username, interval, endtime, scheduler, request_id):
     scheduler.add_job(
         func=inference_pipeline,
         id=username,
-        args=[request_id],
+        args=[username, request_id],
         trigger="interval",
         # minutes=int(interval),
         seconds=int(interval),

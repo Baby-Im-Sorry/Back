@@ -2,6 +2,7 @@ from ultralytics import YOLO
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
+from models import get_custom
 
 Yolo_classes = {
     0: "person",
@@ -123,14 +124,23 @@ def format_class_counts(count_class):
         return formatted_string
 
 
-def get_caption(formatted_string):
+def get_caption(formatted_string, user_custom):
     api_key = os.getenv("OPENAI_API_KEY")
     client = OpenAI(api_key=api_key)
+    
+    promt = f"""
+    아래 제공된 데이터는 현재 매장 내부에 있는 Class들인데, 지금 매장 내부의 상황을 '최대한 간결하게' 설명해줘. 객체가 없다면 없다고 해줘.
+    출력 형식은 {user_custom} 의 값들을 참고해줘.
+    please write in korean langauge
+    --------------------------------
+    {formatted_string}
+    """
+    
     chat_completion = client.chat.completions.create(
         messages=[
             {
                 "role": "user",
-                "content": f"현재 매장 내부에 있는 Class들은 {formatted_string}이다. 지금 매장 내부의 상황을 '최대한 간결하게' 설명해줘. 객체가 없다면 없다고 해줘",
+                "content": f"{promt}",
             }
         ],
         model="gpt-4-0125-preview",
@@ -139,9 +149,9 @@ def get_caption(formatted_string):
     return chat_completion.choices[0].message.content
 
 
-def main(img):
+def main(username, img):
     count_class = get_yolo_inference(img)
     formatted_string = format_class_counts(count_class)
-    caption = get_caption(formatted_string)
-
+    user_custom = get_custom(username)
+    caption = get_caption(formatted_string, user_custom)
     return caption
