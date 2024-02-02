@@ -85,24 +85,14 @@ Yolo_classes = {
     78: "hair drier",
     79: "toothbrush",
 }
-Yolo_value = list(Yolo_classes.values())
 
 dotenv_path = os.path.join(
     os.path.dirname(os.path.dirname(__file__)), ".env.production"
 )
 load_dotenv(dotenv_path)
 
-# def load_yolo_model():
-#     model = YOLO("yolov8n.pt")
-#     return model
 
-
-# def perform_object_detection(model, img):
-#     result = model(img)
-#     return result
-
-
-def yolo_inference(img):
+def get_yolo_inference(img):
     model = YOLO("yolov8n.pt")
     result = model(img)
     result_tensor = result[0].boxes.cls
@@ -123,13 +113,13 @@ def yolo_inference(img):
 def format_class_counts(count_class):
     try:
         formatted_string = ""
-
         for j, k in count_class.items():
             formatted_string += f"{j}는 {str(k)}개 "
 
         return formatted_string
     except:
         formatted_string = "없음"
+
         return formatted_string
 
 
@@ -150,14 +140,8 @@ def get_caption(formatted_string):
 
 
 def main(img):
-    # model = load_yolo_model()
-    # result = perform_object_detection(model, img)
-    count_class = yolo_inference(img)
-    classes_string = format_class_counts(count_class)
-    gpt3_response = get_caption(classes_string)
+    count_class = get_yolo_inference(img)
+    formatted_string = format_class_counts(count_class)
+    caption = get_caption(formatted_string)
 
-    return gpt3_response
-
-
-# if __name__ == "__main__":
-#     main()
+    return caption

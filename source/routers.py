@@ -11,6 +11,7 @@ from utils import (
     get_current_breifing,
     get_briefing,
     get_all_request,
+    chat_summary
 )
 
 router = APIRouter()
@@ -84,3 +85,12 @@ def getAllRequest(username: str = Form(...)):
 def getBriefing(request_id: str = Form(...)):
     logger.info("getBriefing()")
     return get_briefing(request_id)
+
+@router.post('/aiSummary')
+def aiSummary(request_id: str = Form(...)):
+    logger.info('aiSummary')
+    
+    #해당 user의 모든 allrequest -> 전체 request 중 특정 request 내 모든 Briefing
+    briefing_data = get_briefing(request_id)
+    return chat_summary(briefing_data)
+    
