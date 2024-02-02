@@ -38,12 +38,12 @@ def generate_custom_objectid(counter):
 counter = 0
 data_objects = []
 for briefing in briefings:
-    request_id = "65bc7b763d76950d3c62aca5"
+    request_id = "65bcaa653d76950d3c62acf2"
     briefing_id = generate_custom_objectid(counter)
     
     data_objects.append({
-        "_id": {"$oid": briefing_id},
-        "request_id": {"$oid": ObjectId(request_id)},
+        "_id": {"$oid": str(briefing_id)},
+        "request_id": {"$oid": str(ObjectId(request_id))},
         "briefing": briefing
     })
     counter += 1
@@ -52,8 +52,6 @@ for briefing in briefings:
 with open('sample_brif_data.json', 'w', encoding='utf-8') as file:
     file.write("[\n")
     for index, obj in enumerate(data_objects):
-        obj['_id'] = str(obj['_id']['$oid'])
-        obj['request_id'] = str(obj['request_id']['$oid'])
         # 마지막 객체인 경우 쉼표를 추가하지 않음
         if index == len(data_objects) - 1:
             file.write(json.dumps(obj, ensure_ascii=False) + "\n")
