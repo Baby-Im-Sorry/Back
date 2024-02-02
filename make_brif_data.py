@@ -1,5 +1,6 @@
-from datetime import datetime
+import time
 import json
+from bson import ObjectId
 
 # 데이터 리스트
 briefings = [
@@ -27,16 +28,35 @@ briefings = [
 
 data_objects = []
 
+# briefing id 생성자
+def generate_custom_objectid(counter):
+    timestamp = int(time.time())
+    random_bytes = ObjectId().binary[4:9]
+    counter_bytes = counter.to_bytes(3, byteorder='big')
+    return ObjectId(bytes([timestamp >> 24 & 0xFF, timestamp >> 16 & 0xFF, timestamp >> 8 & 0xFF, timestamp & 0xFF]) + random_bytes + counter_bytes)
+
+counter = 0
+data_objects = []
 for briefing in briefings:
-    current_time = datetime.now().strftime("%Y%m%dH%M%S%f")
-    temp_id = "1111" + str(current_time)  # 111120240215153000123456
+    request_id = "65bc7b763d76950d3c62aca2"
+    briefing_id = generate_custom_objectid(counter)
+    
     data_objects.append({
-        "_id": {"$oid": temp_id},
-        "request_id": {"$oid": "1"},  # 특정 유저가 만든 request id 를 여기에 넣어야 함.
+        "_id": {"$oid": briefing_id},
+        "request_id": {"$oid": ObjectId(request_id)},
         "briefing": briefing
     })
+    counter += 1
 
 # 파일에 데이터 객체들을 JSON 형식으로 쓰기
 with open('sample_brif_data.json', 'w', encoding='utf-8') as file:
-    for obj in data_objects:
-        file.write(json.dumps(obj, ensure_ascii=False) + ",\n")
+    file.write("[\n")
+    for index, obj in enumerate(data_objects):
+        obj['_id'] = str(obj['_id']['$oid'])
+        obj['request_id'] = str(obj['request_id']['$oid'])
+        # 마지막 객체인 경우 쉼표를 추가하지 않음
+        if index == len(data_objects) - 1:
+            file.write(json.dumps(obj, ensure_ascii=False) + "\n")
+        else:
+            file.write(json.dumps(obj, ensure_ascii=False) + ",\n")
+    file.write("]")
