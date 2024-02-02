@@ -44,13 +44,13 @@ def inference_pipeline(username, request_id):
         except:
             print("error")
         if time.time() - start > 1:
-            break  # 10초가 지나면 while 루프 종료
+            break
+
     # timestamp = time.time()
     # seoul_timezone = pytz.timezone("Asia/Seoul")
     # date_time_seoul = datetime.fromtimestamp(timestamp, seoul_timezone)
     # formatted_time = date_time_seoul.strftime("%Y-%m-%d %H:%M:%S")
     # temp_str = f"test_{formatted_time}"
 
-    models.save_briefing(request_id,briefing=res[-1])
-    #models.save_briefing(request_id, temp_str)
-
+    models.save_briefing(request_id, briefing=res[-1])
+    # models.save_briefing(request_id, temp_str)

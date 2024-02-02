@@ -1,3 +1,4 @@
+import time
 from pymongo.collection import Collection
 from config_db import db
 import datetime
@@ -10,11 +11,16 @@ briefing_collection: Collection = db["briefings"]
 
 logger = logging.getLogger(__name__)
 
+
 def save_user(username: str):
     logger.info("save_user()")
     user_schema = {
         "username": username,
-        "custom": []
+        "custom": [
+            "한국어로 말해줘",
+            "공손하게 말해줘",
+            "간단명료하게 말해줘",
+        ],
     }
     user_id = user_collection.insert_one(user_schema).inserted_id
     return user_id
@@ -40,10 +46,11 @@ def save_briefing(request_id: str, briefing: str):
     logger.info("save_briefing()")
     briefing_schema = {
         "request_id": request_id,
-        "briefing": briefing,
+        "briefing": f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M")}_{briefing}',
     }
     briefing_id = briefing_collection.insert_one(briefing_schema).inserted_id
     return briefing_id
+
 
 def check_user(username: str):
     logger.info("check_user()")
@@ -58,17 +65,19 @@ def check_user(username: str):
     if existing_user:  # 기존 유저 -> 로그인
         return {"msg": "login", "user_id": str(existing_user["_id"])}
 
+
 # user 테이블의 custom 필드 업데이트
 def update_custom(username: str, custom_list: list):
     logger.info("update_custom()")
     user_collection.update_one(
         {"username": username},
-        {"$set": {"custom": custom_list}}   # 기존 value 값 덮어쓰기
+        {"$set": {"custom": custom_list}},  # 기존 value 값 덮어쓰기
     )
     return None
+
 
 def get_custom(username: str):
     logger.info("get_custom()")
     user = user_collection.find_one({"username": username})
-    custom_list = user['custom']
+    custom_list = user["custom"]
     return custom_list

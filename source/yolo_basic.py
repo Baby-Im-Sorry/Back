@@ -127,15 +127,16 @@ def format_class_counts(count_class):
 def get_caption(formatted_string, user_custom):
     api_key = os.getenv("OPENAI_API_KEY")
     client = OpenAI(api_key=api_key)
-    
+    print(user_custom)
+
     promt = f"""
     아래 제공된 데이터는 현재 매장 내부에 있는 Class들인데, 지금 매장 내부의 상황을 '최대한 간결하게' 설명해줘. 객체가 없다면 없다고 해줘.
     출력 형식은 {user_custom} 의 값들을 참고해줘.
-    please write in korean langauge
+    만약 user_custom이 빈 리스트라면 클래스만 참고해서 캡션을 만들어 줘.
     --------------------------------
     {formatted_string}
     """
-    
+
     chat_completion = client.chat.completions.create(
         messages=[
             {
