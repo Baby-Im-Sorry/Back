@@ -11,6 +11,9 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from config_db import DATABASE_URI
 from bson import ObjectId
 import logging
+import os
+from openai import OpenAI
+from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
 scheduler = BackgroundScheduler()
@@ -126,3 +129,22 @@ def get_all_request(username):
     ]
     request_list.reverse()  # 내림차순 정렬
     return request_list
+
+# briefing data list을 받아서 AI 요약하는 함수
+def chat_summary(briefing_data):
+    load_dotenv()
+    api_key = os.environ.get("OPENAI_API_KEY")
+
+    client = OpenAI(api_key=api_key)
+    #user_custom = str(user_custom)
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": f"{briefing_data} 내 캡션들을 종합적으로 고려해 매장 상황을 한 줄로 요약 작성해줘.",
+            }
+        ],
+        model="gpt-4",
+    )
+    
+    return chat_completion.choices[0].message.content
