@@ -143,10 +143,13 @@ def chat_summary(briefing_data):
         messages=[
             {
                 "role": "user",
-                "content": f"{briefing_data} 내 캡션들을 종합적으로 고려해 매장 상황을 한 줄로 요약 작성해줘.",
+                "content": f"{briefing_data} 내 요소 내역들을 종합적으로 고려해 해당 briefing 내 매장 상황을 종합적으로 한 줄로 요약 작성해줘.tone: Formal writing style: Conversational",
+                
             }
         ],
-        model="gpt-4",
+        model="gpt-4-0125-preview",
+        temperature = 0.7,
+        top_p=0.9
     )
     
     return chat_completion.choices[0].message.content
