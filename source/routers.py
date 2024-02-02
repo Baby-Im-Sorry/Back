@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Form, HTTPException, WebSocket, Query
+from fastapi import APIRouter, Form, HTTPException, WebSocket, Query, Response
 from apscheduler.schedulers.background import BackgroundScheduler
 import logging
+import json
 from models import check_user
 from utils import (
     send_briefing_data,
@@ -84,7 +85,9 @@ def getAllRequest(username: str = Form(...)):
 @router.post("/getBriefing")
 def getBriefing(request_id: str = Form(...)):
     logger.info("getBriefing()")
-    return get_briefing(request_id)
+    briefing_list = get_briefing(request_id)
+    json_str = json.dumps(briefing_list, ensure_ascii=False)
+    return Response(content=json_str, media_type="application/json; charset=UTF-8")
 
 @router.post('/aiSummary')
 def aiSummary(request_id: str = Form(...)):

@@ -1,5 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from fastapi import HTTPException, Response
+from fastapi import HTTPException
 from models import save_request
 from scheduler import start_scheduler, end_scheduler
 from models import (
@@ -14,7 +14,6 @@ import logging
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
-import json
 
 logger = logging.getLogger(__name__)
 scheduler = BackgroundScheduler()
@@ -102,10 +101,10 @@ def get_briefing(request_id):
     try:
         briefings = bf_collection.find({"request_id": ObjectId(request_id)})
         briefing_list = [briefing.get("briefing") for briefing in briefings]
-        json_str = json.dumps(briefing_list, ensure_ascii=False)
-        return Response(content=json_str, media_type="application/json; charset=UTF-8")
+        return briefing_list
     except HTTPException as e:
-        return HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}")
+        print(HTTPException(status_code=500, detail=f"Breifing Error: {str(e)}"))
+        return None
 
 
 # 해당 사용자의 db내역 불러오기
@@ -142,20 +141,27 @@ def get_all_request(username):
 def chat_summary(briefing_data):
     load_dotenv()
     api_key = os.environ.get("OPENAI_API_KEY")
-
     client = OpenAI(api_key=api_key)
-    # user_custom = str(user_custom)
+
+    prompt = f"""
+    아래 내용을 바탕으로 오늘 매장 상황을 3줄 이내로 요약해줘. 
+    tone: Formal
+    writing style: Business
+    please write in korean langauge
+    --------------------------------
+    {briefing_data}
+    """
+    print(briefing_data)
     chat_completion = client.chat.completions.create(
         messages=[
             {
                 "role": "user",
-                "content": f"{briefing_data} 내 요소 내역들을 종합적으로 고려해 해당 briefing 내 매장 상황을 종합적으로 한 줄로 요약 작성해줘.tone: Formal writing style: Conversational",
-                
-            }
+                "content": f"{prompt}",
+            }#Persuasive
         ],
         model="gpt-4-0125-preview",
         temperature = 0.7,
-        top_p=0.9
+        top_p=0.9,
     )
 
     return chat_completion.choices[0].message.content
