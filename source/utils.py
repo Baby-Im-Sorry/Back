@@ -144,7 +144,8 @@ def chat_summary(briefing_data):
     client = OpenAI(api_key=api_key)
 
     prompt = f"""
-    아래 내용을 바탕으로 오늘 매장 상황을 3줄 이내로 요약해줘. 
+    아래 제공된 데이터는 무인카페의 데이터인데 이를 바탕으로 오늘 매장 상황을 3줄로 요약해줘. 
+    여성 손님과 남성 손님의 인원수를 내용에 담아주고, 탐색된 상황을 바탕으로 어떻게 매장을 운영하면 더 좋을 지 상세히 조언을 담아줘.
     tone: Formal
     writing style: Business
     please write in korean langauge
