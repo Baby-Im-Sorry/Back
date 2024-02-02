@@ -12,38 +12,37 @@ logger = logging.getLogger(__name__)
 
 def save_user(username: str):
     logger.info("save_user()")
-    user_data = {
+    user_schema = {
         "username": username,
     }
-    user_id = user_collection.insert_one(user_data).inserted_id
+    user_id = user_collection.insert_one(user_schema).inserted_id
     return user_id
 
 
-def save_request(username: str, interval: int, endtime: str, is_active: bool):
+def save_request(username: str, interval: int, endtime: str):
     logger.info("save_request()")
     # request_name: 요청 이름 -> 그날 날짜 시간으로 자동 저장
     parsed_time = datetime.datetime.strptime(endtime, "%I:%M %p")
     endtime = parsed_time.strftime("%H:%M")
-    request_data = {
+    request_schema = {
         "username": username,
         "request_name": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "interval": interval,
         "endtime": endtime,
-        "is_active": is_active,
+        "is_active": True,
     }
-    request_id = request_collection.insert_one(request_data).inserted_id
+    request_id = request_collection.insert_one(request_schema).inserted_id
     return request_id
 
 
 def save_briefing(request_id: str, briefing: str):
     logger.info("save_briefing()")
-    briefing_data = {
+    briefing_schema = {
         "request_id": request_id,
         "briefing": briefing,
     }
-    briefing_id = briefing_collection.insert_one(briefing_data).inserted_id
+    briefing_id = briefing_collection.insert_one(briefing_schema).inserted_id
     return briefing_id
-
 
 def check_user(username: str):
     logger.info("check_user()")
