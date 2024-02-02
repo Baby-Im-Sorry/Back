@@ -143,7 +143,7 @@ def get_caption(formatted_string):
                 "content": f"현재 매장 내부에 있는 Class들은 {formatted_string}이다. 지금 매장 내부의 상황을 '최대한 간결하게' 설명해줘. 객체가 없다면 없다고 해줘",
             }
         ],
-        model="gpt-4",
+        model="gpt-4-0125-preview",
     )
 
     return chat_completion.choices[0].message.content
