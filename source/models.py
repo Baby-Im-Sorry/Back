@@ -1,6 +1,5 @@
-import time
 from pymongo.collection import Collection
-from config_db import db
+from .config_db import db
 import datetime
 import logging
 
