@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.base import JobLookupError
-from inference_pipeline import inference_pipeline
+from .inference_pipeline import inference_pipeline
 
 
 def convert_endtime(endtime_str):

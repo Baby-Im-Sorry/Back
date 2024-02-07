@@ -1,13 +1,8 @@
-from datetime import datetime
-import os
-from dotenv import load_dotenv
-import pytz
-import models
+from .models import save_briefing
 import time
 import pyrealsense2 as rs
 import numpy as np
-import cv2
-import yolo_basic
+from .yolo_basic import main
 
 
 class Realsense:
@@ -39,7 +34,7 @@ def inference_pipeline(username, request_id):
     while True:
         _, _, img = cam.get_frame()
         try:
-            caption = yolo_basic.main(username, img)
+            caption = main(username, img)
             res.append(caption)
         except:
             print("error")
@@ -52,5 +47,5 @@ def inference_pipeline(username, request_id):
     # formatted_time = date_time_seoul.strftime("%Y-%m-%d %H:%M:%S")
     # temp_str = f"test_{formatted_time}"
 
-    models.save_briefing(request_id, briefing=res[-1])
+    save_briefing(request_id, briefing=res[-1])
     # models.save_briefing(request_id, temp_str)

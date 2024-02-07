@@ -2,7 +2,7 @@ from ultralytics import YOLO
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
-from models import get_custom
+from .models import get_custom
 
 Yolo_classes = {
     0: "person",

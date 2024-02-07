@@ -1,14 +1,14 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import HTTPException
-from models import save_request
-from scheduler import start_scheduler, end_scheduler
-from models import (
+from .models import save_request
+from .scheduler import start_scheduler, end_scheduler
+from .models import (
     request_collection as rq_collection,
     briefing_collection as bf_collection,
 )
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
-from config_db import DATABASE_URI
+from .config_db import DATABASE_URI
 from bson import ObjectId
 import logging
 import os
@@ -161,10 +161,10 @@ def chat_summary(briefing_data):
             {
                 "role": "user",
                 "content": f"{prompt}",
-            }#Persuasive
+            }  # Persuasive
         ],
         model="gpt-4-0125-preview",
-        temperature = 0.7,
+        temperature=0.7,
         top_p=0.9,
     )
     end_time = time.time()
