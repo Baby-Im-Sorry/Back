@@ -85,58 +85,38 @@ API Specification
 
 * login
 
-* description
-    ##### check_user in models.py 를 이용해 신규 회원, 기존 회원 검사. 기존 회원인 경우 "message":"signup"과 함께 #user_id 반환신규 회원인 경우 "message":"login"과 함께 user_id 반환
+    * description
+        
+        * Utilize **check_user** in **models.py** to verify new and existing users.
 
--------------------
-| **API Specification: /login** |
-|------------------|-------------|
-| **Endpoint**     | **Method**  |
-| `POST /login`    | POST        |
--------------------
+            * In the case of an existing user, return `{"message": "signup", "user_id": <user_id>}`.
+            * For a new user, return `{"message": "login", "user_id": <user_id>}`.
 
-**Request**
+| **Endpoint** | **Method** |
+|--------------|------------|
+| `POST /login`| POST       |
 
-| **Header**       ||
-|------------------||
-| `Content-Type`   ||
-|   `application/x-www-form-urlencoded` ||
--------------------
 
-| **Body**         |||     
-| Parameter  | Type   | Description         |
-|-----------|--------|---------------------|
-| username  | string | User's username.    |
--------------------
+|  |**Request**|
+|--------------|------------------|
+| **Header**   ||
+| *"No special headers required"* ||
+| **Body**     ||
+| *Parameter*    | *Type* ||
+| username    | String || 
+  
+|**Response** |
+|--------------|
+| **Success Response** |
+| **Status Code:** 200 OK |
+| **Body:** |
+| ```json { "message" : "signup", "user_id" : "user_id_value"} ```|
+| or |
+| ```json { "message" : "login", "user_id" : "user_id_value"} ```|
+| **Error Response** |
+| **Status Code:** 500 Internal Server Error |
+| **Body:** |
+| ```json { "detail": "Login Error: error_message"} ```|
 
-**Response**
 
-| **Success Response**  |||
-|----------------------|||
-| **Status Code:** 200 OK ||
-| **Body:**             ||
-| ```json             |||
-| {                    |||
-|   "message": "signup",||
-|   "user_id": "user_id_value" ||
-| }                    |||
-| ```                  |||
-| or                   |||
-| ```json             |||
-| {                    |||
-|   "message": "login", ||
-|   "user_id": "user_id_value" ||
-| }                    |||
-| ```                  |||
--------------------
 
-| **Error Response**    |||
-|----------------------|||
-| **Status Code:** 500 Internal Server Error ||
-| **Body:**             ||
-| ```json             |||
-| {                    |||
-|   "detail": "Login Error: error_message" ||
-| }                    |||
-| ```                  |||
--------------------
