@@ -131,14 +131,15 @@ API Specification
 |--------------|------------|
 | `websocket/ws`| WebSocket |
 
-    **Parameters**
 
-    | **Name**     | **Type**  | **Description**                 |
-    |--------------|-----------|---------------------------------|
-    | websocket    | WebSocket | The WebSocket connection object. |
-    | username     | String    | User's username.                 |
-    | interval     | String    | Requested interval for updates.  |
-    | endtime      | String    | Requested end time for updates.  |
+| **Parameters**| | |
+
+| **Name**     | **Type**  |    **Description**                 |
+|--------------|-----------|---------------------------------|
+| websocket    | WebSocket | The WebSocket connection object. |
+| username     | String    | User's username.                 |
+| interval     | String    | Requested interval for updates.  |
+| endtime      | String    | Requested end time for updates.  |
 
 
 
