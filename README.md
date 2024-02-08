@@ -67,21 +67,15 @@ API List-up
 | Index | Method | URI | Description            |
 |-------|--------|-----|------------------------|
 | 1     | POST   | /login          | 로그인 API              |
-| 2     | POST   | /endBriefing    | Briefing 종료          |
-| 3     | POST    | /getAllRequest  | 모든 request 조회      |
-| 4     | POST    | /getBriefing    | 모든 briefing 조회     |
-| 5     | POST    | /aiSummary      | 브리핑 요약            |
-| 6     | POST    | /getCustom      | Custom 획득            |
-| 7     | POST    | /updateCustom   | Custom 갱신            |
-| 8     | POST   | /save_user      | DB 저장 API (User)     |
-| 9     | POST   | /save_request   | DB 저장 API (Request)  |
-| 10    | POST   | /save_briefing  | DB 저장 API (Briefing) |
-| 11    | GET    | /check_user     | DB 조회 API (User)     |
-| 12    | PUT    | /update_custom  | DB 조회 API (Custom)   |
-| 13    | POST   | /schedule_on    | 스케줄링 on API        |
-| 14    | POST   | /schedule_off   | 스케줄링 off API       |
-| 15    | WebSocket | /ws           | Web socket (Db 변화 감지)  |
-| 16    | WebSocket | /reloadBriefing | Web socket (진행 중 briefing 확인) |
+| 2    | WebSocket | /ws           | Web socket (Db 변화 감지)  |
+| 3    | WebSocket | /reloadBriefing | Web socket (진행 중 briefing 확인) |
+| 4     | POST   | /endBriefing    | Briefing 종료          |
+| 5     | POST    | /getAllRequest  | 모든 request 조회      |
+| 6     | POST    | /getBriefing    | 모든 briefing 조회     |
+| 7     | POST    | /aiSummary      | 브리핑 요약            |
+| 8     | POST    | /getCustom      | Custom 획득            |
+| 9     | POST    | /updateCustom   | Custom 갱신            |
+
 
 -----------------------
 
