@@ -15,33 +15,34 @@ BIS_Backend_Overview
 Environment Installation
 ------------------------
 
-##### fastapi
+### fastapi
 ```
 pip install fastapi
 pip install "uvicorn[standard]"
 ```
 
-##### websocket
+### websocket
 ```
 pip install websockets
 ```
 
-##### apscheduler
+### apscheduler
 ```
 pip install apscheduler
 ```
 
-##### mongodb
+### mongodb
 ```
 pip install pymongo
 ```
 
 Install MongoDB following the instructions on the 
-[official MongoDB website][mongodb]
-[mongodb]: https://www.mongodb.com/try/download/community
+
+[official MongoDB website](https://www.mongodb.com/try/download/community)
 
 
-* .env.production
+
+### .env.production
 ```
 pip install python-dotenv
 ```
@@ -54,7 +55,8 @@ DATABASE_PASSWORD="your_pw"
 DATABASE_URI=mongodb+srv://<DATABASE_ID>:<DATABASE_PASSWORD>@"your_dbname".keizkxa.mongodb.net
 ```
 
-Ensure that you keep this file secure and do not share sensitive information.
+**Ensure that you keep this file secure and do not share sensitive information.**
+
 This file contains configuration details for your production environment, including database credentials. Keep in mind the importance of securing this information and not exposing it publicly.
 
 
