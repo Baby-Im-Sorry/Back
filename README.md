@@ -85,63 +85,66 @@ API Specification
 
 * login
 
------------------
-| Endpoint      | Method |
-|---------------|--------|
-| `POST /login` | POST   |
------------------
-
-    * description
+* description
     # check_user in models.py 를 이용해 신규 회원, #기존 회원 검사. 
-    #기존 회원인 경우 "message":"signup"과 함께 #user_id 반환
-    #신규 회원인 경우 "message":"login"과 함께 
-    #user_id 반환
+    기존 회원인 경우 "message":"signup"과 함께 #user_id 반환
+    신규 회원인 경우 "message":"login"과 함께 
+    user_id 반환
 
-    -------------------
-    | **Header**       ||
-    |------------------||
-    | `Content-Type`   ||
-    |   `application/x-www-form-urlencoded` ||
-    -------------------
+-------------------
+| **API Specification: /login** |
+|------------------|-------------|
+| **Endpoint**     | **Method**  |
+| `POST /login`    | POST        |
+-------------------
 
-    -------------------
-    | **Body**         ||
-    |------------------||
-    | Parameter  | Type   | Description         |
-    |-----------|--------|---------------------|
-    | username  | string | User's username.    |
-    -------------------
+**Request**
 
-    ** Response **
-    -------------------
-    | **Success Response**  |||
-    |----------------------|||
-    | **Status Code:** 200 OK ||
-    | **Body:**             ||
-    | ```json             |||
-    | {                    |||
-    |   "message": "signup",||
-    |   "user_id": "user_id_value" ||
-    | }                    |||
-    | ```                  |||
-    | or                   |||
-    | ```json             |||
-    | {                    |||
-    |   "message": "login", ||
-    |   "user_id": "user_id_value" ||
-    | }                    |||
-    | ```                  |||
-    ----------------------
+-------------------
+| **Header**       ||
+|------------------||
+| `Content-Type`   ||
+|   `application/x-www-form-urlencoded` ||
+-------------------
 
-    -------------------
-    | **Error Response**    |||
-    |----------------------|||
-    | **Status Code:** 500 Internal Server Error ||
-    | **Body:**             ||
-    | ```json             |||
-    | {                    |||
-    |   "detail": "Login Error: error_message" ||
-    | }                    |||
-    | ```                  |||
-    -------------------
+-------------------
+| **Body**         ||
+|------------------||
+| Parameter  | Type   | Description         |
+|-----------|--------|---------------------|
+| username  | string | User's username.    |
+-------------------
 
+**Response**
+
+-------------------
+| **Success Response**  |||
+|----------------------|||
+| **Status Code:** 200 OK ||
+| **Body:**             ||
+| ```json             |||
+| {                    |||
+|   "message": "signup",||
+|   "user_id": "user_id_value" ||
+| }                    |||
+| ```                  |||
+| or                   |||
+| ```json             |||
+| {                    |||
+|   "message": "login", ||
+|   "user_id": "user_id_value" ||
+| }                    |||
+| ```                  |||
+-------------------
+
+-------------------
+| **Error Response**    |||
+|----------------------|||
+| **Status Code:** 500 Internal Server Error ||
+| **Body:**             ||
+| ```json             |||
+| {                    |||
+|   "detail": "Login Error: error_message" ||
+| }                    |||
+| ```                  |||
+-------------------
