@@ -68,11 +68,11 @@ API List-up
 |-------|--------|-----|------------------------|
 | 1     | POST   | /login          | 로그인 API              |
 | 2     | POST   | /endBriefing    | Briefing 종료          |
-| 3     | GET    | /getAllRequest  | 모든 request 조회      |
-| 4     | GET    | /getBriefing    | 모든 briefing 조회     |
-| 5     | GET    | /aiSummary      | 브리핑 요약            |
-| 6     | GET    | /getCustom      | Custom 획득            |
-| 7     | PUT    | /updateCustom   | Custom 갱신            |
+| 3     | POST    | /getAllRequest  | 모든 request 조회      |
+| 4     | POST    | /getBriefing    | 모든 briefing 조회     |
+| 5     | POST    | /aiSummary      | 브리핑 요약            |
+| 6     | POST    | /getCustom      | Custom 획득            |
+| 7     | POST    | /updateCustom   | Custom 갱신            |
 | 8     | POST   | /save_user      | DB 저장 API (User)     |
 | 9     | POST   | /save_request   | DB 저장 API (Request)  |
 | 10    | POST   | /save_briefing  | DB 저장 API (Briefing) |
