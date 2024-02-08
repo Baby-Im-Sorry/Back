@@ -107,13 +107,13 @@ API Specification
   
 |**Response** |
 |--------------|
-| **Success Response** |
+| **1)Success Response** |
 | **Status Code:** 200 OK |
 | **Body:** |
 | ```json { "message" : "signup", "user_id" : "user_id_value"} ```|
 | or |
 | ```json { "message" : "login", "user_id" : "user_id_value"} ```|
-| **Error Response** |
+| **2)Error Response** |
 | **Status Code:** 500 Internal Server Error |
 | **Body:** |
 | ```json { "detail": "Login Error: error_message"} ```|
@@ -161,7 +161,8 @@ API Specification
 
 
     
-| **Parameters** | | |
+| **Parameters**| | |
+
 |--------------|-----------|---------------------------------|
 | **Name**     | **Type**  | **Description**                 |
 | websocket    | WebSocket | The WebSocket connection object. |
@@ -191,11 +192,11 @@ API Specification
   
 |**Response** |
 |--------------|
-| **Success Response** |
+| **1) Success Response** |
 | **Status Code:** 200 OK |
 | **Body:** |
 | ```"message": "브리핑 성공적으로 종료" ```|
-| **Error Response** |
+| **2)Error Response** |
 | **Status Code:** 500 Internal Server Error |
 | **Body:** |
 | ```Internal Server Error ```|
