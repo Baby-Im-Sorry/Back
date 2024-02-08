@@ -162,9 +162,8 @@ API Specification
 
     
  **Parameters**
-|--------------|-----------|---------------------------------|
 | **Name**     | **Type**  | **Description**                 |
-
+|--------------|-----------|---------------------------------|
 | websocket    | WebSocket | The WebSocket connection object. |
 | username     | String    | User's username.                 |
 
