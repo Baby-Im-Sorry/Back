@@ -14,7 +14,7 @@ BIS_Backend_Overview
 
 Environment Installation
 ------------------------
-**Please refer to the attached requirement.txt for the versions of packages and libraries needed for environment installation.**
+**Please refer to the attached "requirements.txt" for the versions of packages and libraries needed for environment installation.**
 
 ### fastapi
 ```
