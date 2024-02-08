@@ -118,5 +118,31 @@ API Specification
 | **Body:** |
 | ```json { "detail": "Login Error: error_message"} ```|
 
+* websocket_endpoint
+
+    * Description:
+        * Handle WebSocket connections for continuous updates.
+        * Establish WebSocket connection.
+        * Store new request in the database and register with the scheduler.
+        * Continuously send updates to the frontend through the WebSocket.
+  
+
+| **Endpoint** | **Method** |
+|--------------|------------|
+| `websocket/ws`| WebSocket |
+
+    **Parameters**
+
+    | **Name**     | **Type**  | **Description**                 |
+    |--------------|-----------|---------------------------------|
+    | websocket    | WebSocket | The WebSocket connection object. |
+    | username     | String    | User's username.                 |
+    | interval     | String    | Requested interval for updates.  |
+    | endtime      | String    | Requested end time for updates.  |
+
+
+
+
+    
 
 
