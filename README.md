@@ -86,10 +86,7 @@ API Specification
 * login
 
 * description
-    # check_user in models.py 를 이용해 신규 회원, #기존 회원 검사. 
-    기존 회원인 경우 "message":"signup"과 함께 #user_id 반환
-    신규 회원인 경우 "message":"login"과 함께 
-    user_id 반환
+    ##### check_user in models.py 를 이용해 신규 회원, 기존 회원 검사. 기존 회원인 경우 "message":"signup"과 함께 #user_id 반환신규 회원인 경우 "message":"login"과 함께 user_id 반환
 
 -------------------
 | **API Specification: /login** |
@@ -104,7 +101,8 @@ API Specification
 |------------------||
 | `Content-Type`   ||
 |   `application/x-www-form-urlencoded` ||
-|------------------|---------------------|---------------------|
+-------------------
+
 | **Body**         |||     
 | Parameter  | Type   | Description         |
 |-----------|--------|---------------------|
@@ -130,7 +128,8 @@ API Specification
 |   "user_id": "user_id_value" ||
 | }                    |||
 | ```                  |||
-|----------------------|---------------------|---------------------|
+-------------------
+
 | **Error Response**    |||
 |----------------------|||
 | **Status Code:** 500 Internal Server Error ||
