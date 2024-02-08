@@ -14,6 +14,7 @@ BIS_Backend_Overview
 
 Environment Installation
 ------------------------
+**Please refer to the attached requirement.txt for the versions of packages and libraries needed for environment installation.**
 
 ### fastapi
 ```
@@ -58,5 +59,6 @@ DATABASE_URI=mongodb+srv://<DATABASE_ID>:<DATABASE_PASSWORD>@"your_dbname".keizk
 **Ensure that you keep this file secure and do not share sensitive information.**
 
 This file contains configuration details for your production environment, including database credentials. Keep in mind the importance of securing this information and not exposing it publicly.
+
 
 
