@@ -36,9 +36,7 @@ pip install apscheduler
 pip install pymongo
 ```
 
-[official MongoDB website][mongodb]
-
-[mongodb]: https://www.mongodb.com/try/download/community
+Install MongoDB following the instructions on the [official MongoDB website][mongodb][mongodb]: https://www.mongodb.com/try/download/community
 
 
 * .env.production
