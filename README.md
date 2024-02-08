@@ -100,16 +100,12 @@ API Specification
 
 **Request**
 
--------------------
 | **Header**       ||
 |------------------||
 | `Content-Type`   ||
 |   `application/x-www-form-urlencoded` ||
--------------------
-
--------------------
-| **Body**         ||
-|------------------||
+|------------------|---------------------|---------------------|
+| **Body**         |||     
 | Parameter  | Type   | Description         |
 |-----------|--------|---------------------|
 | username  | string | User's username.    |
@@ -117,7 +113,6 @@ API Specification
 
 **Response**
 
--------------------
 | **Success Response**  |||
 |----------------------|||
 | **Status Code:** 200 OK ||
@@ -135,9 +130,7 @@ API Specification
 |   "user_id": "user_id_value" ||
 | }                    |||
 | ```                  |||
--------------------
-
--------------------
+|----------------------|---------------------|---------------------|
 | **Error Response**    |||
 |----------------------|||
 | **Status Code:** 500 Internal Server Error ||
