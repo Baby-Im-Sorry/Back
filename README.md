@@ -135,15 +135,15 @@ API Specification
 | `websocket/ws`| WebSocket |
 
 
-| **Parameters**| | |
+**Parameters**
 
-|--------------|-----------|---------------------------------|
-| **Name**     | **Type**  |    **Description**                 |
+| **Name**     | **Type**  | **Description**                   |
+|--------------|-----------|-----------------------------------|
+| websocket    | WebSocket | The WebSocket connection object.  |
+| username     | String    | User's username.                  |
+| interval     | String    | Requested interval for updates.   |
+| endtime      | String    | Requested end time for updates.   |
 
-| websocket    | WebSocket | The WebSocket connection object. |
-| username     | String    | User's username.                 |
-| interval     | String    | Requested interval for updates.  |
-| endtime      | String    | Requested end time for updates.  |
 
 
 
@@ -161,10 +161,10 @@ API Specification
 
 
     
-| **Parameters**| | |
-
-| **Name**     | **Type**  | **Description**                 |
+ **Parameters**
 |--------------|-----------|---------------------------------|
+| **Name**     | **Type**  | **Description**                 |
+
 | websocket    | WebSocket | The WebSocket connection object. |
 | username     | String    | User's username.                 |
 
