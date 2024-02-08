@@ -107,13 +107,13 @@ API Specification
   
 |**Response** |
 |--------------|
-| **1)Success Response** |
+| **1) Success Response** |
 | **Status Code:** 200 OK |
 | **Body:** |
 | ```json { "message" : "signup", "user_id" : "user_id_value"} ```|
 | or |
 | ```json { "message" : "login", "user_id" : "user_id_value"} ```|
-| **2)Error Response** |
+| **2) Error Response** |
 | **Status Code:** 500 Internal Server Error |
 | **Body:** |
 | ```json { "detail": "Login Error: error_message"} ```|
@@ -163,8 +163,8 @@ API Specification
     
 | **Parameters**| | |
 
-|--------------|-----------|---------------------------------|
 | **Name**     | **Type**  | **Description**                 |
+|--------------|-----------|---------------------------------|
 | websocket    | WebSocket | The WebSocket connection object. |
 | username     | String    | User's username.                 |
 
