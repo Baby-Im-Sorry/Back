@@ -83,7 +83,7 @@ API Specification
 -----------------
 
 
-* login
+* ### login
 
     * description
         
@@ -118,7 +118,10 @@ API Specification
 | **Body:** |
 | ```json { "detail": "Login Error: error_message"} ```|
 
-* websocket_endpoint
+
+
+
+* ### websocket_endpoint
 
     * Description:
         * Handle WebSocket connections for continuous updates.
@@ -134,8 +137,9 @@ API Specification
 
 | **Parameters**| | |
 
-| **Name**     | **Type**  |    **Description**                 |
 |--------------|-----------|---------------------------------|
+| **Name**     | **Type**  |    **Description**                 |
+
 | websocket    | WebSocket | The WebSocket connection object. |
 | username     | String    | User's username.                 |
 | interval     | String    | Requested interval for updates.  |
@@ -143,7 +147,55 @@ API Specification
 
 
 
+* ### websocket_reloadBriefing
+
+    * Description
+        * Display the ongoing briefing.
+        * Establish WebSocket connection.
+        * Send reloaded briefing data to the frontend.
+        * Get the latest request ID and continuously watch the database for updates.
+    
+| **Endpoint** | **Method** |
+|--------------|------------|
+| `websocket/reloadBriefing`| WebSocket |
+
 
     
+| **Parameters** | | |
+|--------------|-----------|---------------------------------|
+| **Name**     | **Type**  | **Description**                 |
+| websocket    | WebSocket | The WebSocket connection object. |
+| username     | String    | User's username.                 |
+
+* ### endBriefing
+
+    * description
+        * Terminate the ongoing briefing.
+        * The function **endBriefing** uses the **endBriefing_worker** from **utils.py** and **end_scheduler** from **scheduler.py**.
+
+            * Upon success, it prints a success message and returns a success response with the message `"Briefing successfully terminated"`.
+            * In case of failure (e.g., an `exception`), it catches the `"HTTPException"`, logs the error message, and returns an error response with the corresponding status code and details.
+
+| **Endpoint** | **Method** |
+|--------------|------------|
+| `POST /endBriefing`| POST       |
 
 
+|  |**Request**|
+|--------------|------------------|
+| **Header**   ||
+| *"No special headers required"* ||
+| **Body**     ||
+| *Parameter*    | *Type* ||
+| username    | String || 
+  
+|**Response** |
+|--------------|
+| **Success Response** |
+| **Status Code:** 200 OK |
+| **Body:** |
+| ```"message": "브리핑 성공적으로 종료" ```|
+| **Error Response** |
+| **Status Code:** 500 Internal Server Error |
+| **Body:** |
+| ```Internal Server Error ```|
