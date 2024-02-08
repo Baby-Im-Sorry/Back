@@ -199,3 +199,40 @@ API Specification
 | **Status Code:** 500 Internal Server Error |
 | **Body:** |
 | ```Internal Server Error ```|
+
+* ### getAllRequest
+
+    * description
+        * Implement a functionality to retrieve all requests for a specific username from the `"request" Collection` within the database.
+        * **getAllRequest** utilizes the **get_all_request** function from **utils.py** to retrieve and return the list of requests for a specific username from the **"request" Collection** in the database.
+
+* ### getBriefing
+
+    * description
+        * Retrieve briefing information based on the provided `request_id`.
+        * Utilize the `get_briefing` function from `utils.py` to perform a functionality that retrieves all briefings for a specific request_id from the `"briefing" Collection` in the database.
+
+* ### aiSummary
+
+    * description
+        * Generates an AI summary captions based on the provided `request_id`.
+        * This API utilizes two methods: `get_briefing` in `utils.py` for querying all data from the database and `chat_summary` in `utils.py` for generating AI summaries based on the returned briefing data list.
+
+        * To provide additional details on `chat_summary`, it involves using the `OpenAI API key` to generate messages based on a specified format prompt. This process utilizes the `GPT-4-preview model` and performs `prompt engineering` on the briefing data list retrieved earlier, adjusting hyperparameters such as `"tone, writing style, temperature, top_p,"` and others.
+
+* ### getCustom
+
+    * description
+        * this API retrieves the `"custom"` data for a specific username. The obtained `custom_list` is then used to generate an HTTP response in JSON format, encoded in UTF-8.
+        * The `get_custom` in `models.py` process involves searching for the specified username within the "user" collection in the database and referring to it as a custom list.
+
+
+* ### updateCustom
+
+    * description
+        * Utilizing the `update_custom` function in `models.py`, this API updates the `"custom"` field in the "user" table.
+            * If the custom_list is successfully updated, it returns the message `"Success to update Custom."`
+            * In case of exceptions or errors, it raises an `HTTPException` with a status code of 500 and the detail `"Fail to update Custom."`
+
+
+
